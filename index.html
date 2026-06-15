@@ -1012,10 +1012,6 @@ selectedRouteLayers.push(l);
 // add selected route geometry to highlight layer
 highlightLayer.addData(l.toGeoJSON());
 
-map.fitBounds(highlightLayer.getBounds(), {
-  padding: [50, 50]
-});
-
       const p = l.feature.properties;
 
 const html = `
