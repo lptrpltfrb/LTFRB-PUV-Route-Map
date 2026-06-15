@@ -693,8 +693,10 @@ function toggleLayers() {
   const showStops = document.getElementById("stops").checked;
   const showRailways = document.getElementById("rail").checked;
 
-  // ROUTES
-  if(routesLayer){
+  const zoom = map.getZoom();
+
+  // ===== ROUTES =====
+  if (routesLayer) {
     routesLayer.eachLayer(layer => {
 
       const dir = layer.feature.properties.direction;
@@ -707,72 +709,56 @@ function toggleLayers() {
         opacity: visible ? 1 : 0
       });
 
-      if(layer._decorator){
-
-        if(
-          visible &&
-          showArrows &&
-          map.getZoom() >= 14
-        ){
+      // arrows
+      if (layer._decorator) {
+        if (visible && showArrows && zoom >= 14) {
           map.addLayer(layer._decorator);
-        }else{
+        } else {
           map.removeLayer(layer._decorator);
         }
-
       }
-
     });
   }
 
-  // STOPS
+  // ===== STOPS (FIXED) =====
   stopsLayer.eachLayer(l => {
 
     const visible =
-      (
-        (l._direction==="OD" && showOD) ||
-        (l._direction==="DO" && showDO)
-      ) &&
-      showStops;
+      ((l._direction === "OD" && showOD) ||
+       (l._direction === "DO" && showDO)) &&
+      showStops &&
+      zoom >= 14;
 
-    if(visible && map.getZoom() >= 14){
+    if (visible) {
       map.addLayer(l);
-    }else{
+    } else {
       map.removeLayer(l);
     }
-
   });
 
-  // ENDPOINTS
+  // ===== ENDPOINTS (FIXED) =====
   endpointsLayer.eachLayer(l => {
 
     const visible =
-      (
-        (l._direction==="OD" && showOD) ||
-        (l._direction==="DO" && showDO)
-      ) &&
-      showEndpoints;
+      ((l._direction === "OD" && showOD) ||
+       (l._direction === "DO" && showDO)) &&
+      showEndpoints &&
+      zoom >= 14;
 
-    if(visible && map.getZoom() >= 14){
+    if (visible) {
       map.addLayer(l);
-    }else{
+    } else {
       map.removeLayer(l);
     }
-
   });
 
-  // RAILWAYS
-  if(showRailways){
+  // ===== RAILWAYS =====
+  if (showRailways) {
     map.addLayer(trainLayer);
-
-    if(map.getZoom() >= 14){
-      map.addLayer(trainStations);
-    }
-
-  }else{
-
+    if (zoom >= 14) map.addLayer(trainStations);
+  } else {
     map.removeLayer(trainLayer);
     map.removeLayer(trainStations);
-
   }
 
 }
@@ -848,42 +834,18 @@ trainTracks.forEach(track => {
 });
 
 
-  if (routesLayer) {
-    routesLayer.eachLayer(layer => {
+if (routesLayer) {
+  routesLayer.eachLayer(layer => {
+    if (!layer._isSelected) {
       layer.setStyle({ weight: routeWeight });
-    });
-  }
+    }
+  });
+}
 
   // Train stations
   if(zoom>=14) map.addLayer(trainStations); else map.removeLayer(trainStations);
+  toggleLayers();
 
-  // Stops
-  stopsLayer.eachLayer(l=>{
-    if((l._direction==="OD" && showOD) || (l._direction==="DO" && showDO)){
-      if(zoom>=14) map.addLayer(l); else map.removeLayer(l);
-    } else map.removeLayer(l);
-  });
-
-  // Endpoints
-  endpointsLayer.eachLayer(l=>{
-    if((l._direction==="OD" && showOD) || (l._direction==="DO" && showDO)){
-      if(zoom>=14) map.addLayer(l); else map.removeLayer(l);
-    } else map.removeLayer(l);
-  });
-
-  // Arrows (decorators)
-  if(routesLayer){
-    routesLayer.eachLayer(layer=>{
-      const dir = layer.feature.properties.direction;
-      const visible = (dir==="OD" && showOD) || (dir==="DO" && showDO);
-
-      if(visible && zoom>=14){
-        if(layer._decorator) map.addLayer(layer._decorator);
-      } else {
-        if(layer._decorator) map.removeLayer(layer._decorator);
-      }
-    });
-  }
 });
 
   // ==== PUV STOPS + ENDPOINTS ====
