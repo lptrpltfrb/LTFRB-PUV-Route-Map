@@ -5,6 +5,8 @@
   <title>Route Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
 
@@ -56,10 +58,12 @@
   z-index: 9999;
 }
 
-#agency-logos {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+#agency-logos{
+  display:flex;
+  justify-content:center;   /* <-- centers horizontally */
+  align-items:center;
+  gap:10px;
+  width:100%;
 }
 
 #agency-logos img {
@@ -82,7 +86,7 @@
   padding: 10px 12px;
   border-radius: 8px;
   font-family: Arial;
-  font-size: 12px;
+  font-size: 11px;
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
 }
 
@@ -186,11 +190,15 @@
 }
 
 #sidebar-title{
-  font-weight:bold;
-  font-size:14px;
-  margin-top:6px;
-  line-height:1.3;
-  letter-spacing:1px;
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 20px;              /* 🔥 BIGGER than legend */
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 1.8px;
+  line-height: 1.1;
+  margin-top: 10px;
+  text-transform: uppercase;
+  color: #1a1a1a;
 }
 
 /* ===== DISPLAY SECTION ===== */
@@ -219,10 +227,12 @@
       <img src="Bagong_Pilipinas_Logo.png">
     </div>
 
-    <div id="sidebar-title">
-      PUBLIC UTILITY VEHICLE<br>
-      ROUTE MAP
-    </div>
+<div id="sidebar-title">
+  LAND TRANSPORTATION<br>
+  PUBLIC UTILITY VEHICLE<br>
+  ROUTE MAP
+</div>
+
   </div>
 
   <!-- BOX 1: LEGEND -->
