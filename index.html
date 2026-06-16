@@ -72,20 +72,18 @@
 }
 
 
-#legend{
-  position:absolute;
-  bottom:20px;
-  left:20px;
-  z-index:1200;
+#legend {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  margin-top: 8px;
 
-  background:rgba(255,255,255,0.95);
-  padding:10px 12px;
-  border-radius:8px;
-
-  font-family:Arial;
-  font-size:12px;
-
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  background: rgba(255,255,255,0.95);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: Arial;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
 }
 
 .legend-title{
@@ -153,92 +151,120 @@
   background:#bbb;
 }
 
+
+/* ===== SIDEBAR MAIN BOX ===== */
+#sidebar{
+  position:absolute;
+  top:15px;
+  left:10px;
+  z-index:1000;
+
+  width:320px;
+  background:rgba(255,255,255,0.96);
+  border-radius:10px;
+  padding:12px;
+
+  font-family:Arial;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.panel-box{
+  background: rgba(255,255,255,0.96);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+
+/* ===== HEADER ===== */
+#sidebar-header{
+  text-align:center;
+}
+
+#sidebar-title{
+  font-weight:bold;
+  font-size:14px;
+  margin-top:6px;
+  line-height:1.3;
+  letter-spacing:1px;
+}
+
+/* ===== DISPLAY SECTION ===== */
+#display-controls{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:13px;
+}
+
+#display-controls label{
+  cursor:pointer;
+}
   </style>
 </head>
 
 <body>
-<div id="route-control">
-
-<div id="agency-logos">
-  <img src="Department_of_Transportation_(Philippines).png" alt="DOTr Logo">
-  <img src="LTFRB_Seal.png" class="ltfrb-logo" alt="LTFRB Logo">
-  <img src="Bagong_Pilipinas_Logo.png" alt="Bagong Pilipinas Logo">
-</div>
-
-<div class="display-title">🗺 DISPLAY</div>
-
-
-  <span class="section-label">
-    PUV ROUTE ELEMENTS:
-  </span>
-
-  <label>
-    <input type="checkbox" id="od" checked>
-    OD Direction
-  </label>
-
-  <label>
-    <input type="checkbox" id="do" checked>
-    DO Direction
-  </label>
-
-  <label>
-    <input type="checkbox" id="arrows" checked>
-    Direction Arrows
-  </label>
-
-  <label>
-    <input type="checkbox" id="endpoints" checked>
-    Endpoints
-  </label>
-
-<label>
-  <input type="checkbox" id="stops" checked>
-  Stops
-</label>
-
-<div class="divider"></div>
-
-<span class="section-label">
-  OTHER TRANSPORTATION:
-</span>
-
-<label>
-  <input type="checkbox" id="rail" checked>
-  Railways
-</label>
-
-<div id="zoom-container"></div>
-
-</div>
-
 <div id="map"></div>
+<div id="sidebar">
 
-<div id="legend">
-  <div class="legend-title">LEGEND</div>
+  <!-- HEADER -->
+  <div id="sidebar-header">
+    <div id="agency-logos">
+      <img src="Department_of_Transportation_(Philippines).png">
+      <img src="LTFRB_Seal.png" class="ltfrb-logo">
+      <img src="Bagong_Pilipinas_Logo.png">
+    </div>
 
-  <div><span class="legend-line" style="background:#00FFFF;"></span> PUJ OD</div>
-  <div><span class="legend-line" style="background:#0088FF;"></span> PUJ DO</div>
+    <div id="sidebar-title">
+      PUBLIC UTILITY VEHICLE<br>
+      ROUTE MAP
+    </div>
+  </div>
 
-  <div><span class="legend-line" style="background:#FF00FF;"></span> UVE OD</div>
-  <div><span class="legend-line" style="background:#B000FF;"></span> UVE DO</div>
+  <!-- BOX 1: LEGEND -->
+  <div class="panel-box">
+    <div class="legend-title">LEGEND</div>
 
-  <div><span class="legend-line" style="background:#00FF66;"></span> Mini Bus OD</div>
-  <div><span class="legend-line" style="background:#00AA44;"></span> Mini Bus DO</div>
+    <div><span class="legend-line" style="background:#00FFFF;"></span> PUJ OD</div>
+    <div><span class="legend-line" style="background:#0088FF;"></span> PUJ DO</div>
+    <div><span class="legend-line" style="background:#FF00FF;"></span> UVE OD</div>
+    <div><span class="legend-line" style="background:#B000FF;"></span> UVE DO</div>
+    <div><span class="legend-line" style="background:#00FF66;"></span> Mini Bus OD</div>
+    <div><span class="legend-line" style="background:#00AA44;"></span> Mini Bus DO</div>
+    <div><span class="legend-line" style="background:#FFD700;"></span> PUB OD</div>
+    <div><span class="legend-line" style="background:#FF8C00;"></span> PUB DO</div>
+    <div><span class="legend-line" style="background:#FF4444;"></span> P2P OD</div>
+    <div><span class="legend-line" style="background:#800000;"></span> P2P DO</div>
 
-  <div><span class="legend-line" style="background:#FFD700;"></span> PUB OD</div>
-  <div><span class="legend-line" style="background:#FF8C00;"></span> PUB DO</div>
+    <hr>
 
-  <div><span class="legend-line" style="background:#FF4444;"></span> P2P OD</div>
-  <div><span class="legend-line" style="background:#800000;"></span> P2P DO</div>
+    <div><span class="legend-stop"></span> Stop</div>
+    <div><span class="legend-endpoint"></span> Endpoint</div>
+    <div><span class="legend-rail"></span> Railway</div>
+  </div>
 
-  <hr>
+  <!-- BOX 2: DISPLAY CONTROLS -->
+  <div class="panel-box">
+    <div class="section-label">PUV ROUTE ELEMENTS</div>
 
-  <div><span class="legend-stop"></span> Stop</div>
-  <div><span class="legend-endpoint"></span> Endpoint</div>
-  <div><span class="legend-rail"></span> Railway</div>
+    <label><input type="checkbox" id="od" checked> OD Direction</label>
+    <label><input type="checkbox" id="do" checked> DO Direction</label>
+    <label><input type="checkbox" id="arrows" checked> Direction Arrows</label>
+    <label><input type="checkbox" id="endpoints" checked> Endpoints</label>
+    <label><input type="checkbox" id="stops" checked> Stops</label>
+
+    <div class="divider"></div>
+
+    <div class="section-label">OTHER TRANSPORTATION</div>
+
+    <label><input type="checkbox" id="rail" checked> Railways</label>
+  </div>
+
 </div>
-
 
 <div id="route-popup-list" style="
   position: absolute;
@@ -292,6 +318,8 @@
 const map = L.map('map', {
   zoomControl:false
 }).setView([12.8797, 121.7740], 6);
+map.createPane('popupPane');
+map.getPane('popupPane').style.zIndex = 1200;
 
 
   L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
@@ -323,7 +351,6 @@ const hoverHighlightLayer = L.geoJSON(null, {
   pane: 'highlightPane'
 }).addTo(map);
 
-  map.getPane('popupPane').style.zIndex = 1200;
 
 // ===== SELECTED ROUTE HIGHLIGHT LAYER =====
 
@@ -357,7 +384,7 @@ let routeSelectionActive = false;
 let selectedDetailPopup = null;
 
 const zoomControl = L.control.zoom({
-  position:'topleft'
+  position:'topright'
 });
 
 zoomControl.addTo(map);
@@ -366,10 +393,6 @@ setTimeout(() => {
 
   const zoomEl =
     document.querySelector('.leaflet-control-zoom');
-
-  document
-    .getElementById('zoom-container')
-    .appendChild(zoomEl);
 
 },100);
 
