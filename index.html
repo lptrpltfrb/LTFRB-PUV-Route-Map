@@ -202,16 +202,145 @@
 }
 
 /* ===== DISPLAY SECTION ===== */
+/* ===== DISPLAY CONTROLS ===== */
 #display-controls{
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:10px;
   font-size:13px;
+}
+
+/* TITLE */
+.display-box-title{
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+/* SECTION HEADERS */
+.section-label{
+  font-weight:bold;
+  color:#444;
+  margin-top:6px;
+}
+
+/* ===== ICON ALIGNMENT ROW (THIS IS STEP 2) ===== */
+.control-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:2px 0;
+}
+
+.control-left{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.control-icon{
+  width:18px;
+  text-align:center;
+  font-size:14px;
+}
+
+.divider{
+  width:100%;
+  height:1px;
+  background:#ccc;
+  margin:6px 0;
 }
 
 #display-controls label{
   cursor:pointer;
 }
+
+/* ICON ALIGNMENT ROW (DISPLAY CONTROL STYLE) */
+.panel-box label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+}
+
+/* RIGHT SIDE ICON COLUMN */
+.check-icon{
+  margin-left:auto;
+  opacity:0.8;
+  min-width:24px;
+  text-align:right;
+}
+
+/* ICON STYLE MATCH LEGEND */
+.icon-stop{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:black;
+  display:inline-block;
+}
+
+.icon-endpoint{
+  width:10px;
+  height:10px;
+  background:black;
+  transform:rotate(45deg);
+  display:inline-block;
+}
+
+.icon-rail{
+  width:22px;
+  height:4px;
+  background:#2f2f2f;
+  display:inline-block;
+}
+
+/* ===== PANEL BOX (LEGEND + DISPLAY) ===== */
+.panel-box{
+  background: rgba(255,255,255,0.96);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* TITLE INSIDE DISPLAY BOX */
+.panel-title{
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  color: #222;
+}
+
+/* SECTION HEADERS */
+.panel-section{
+  font-weight: 700;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+/* CHECKBOX ROW STYLE */
+.panel-box label{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+/* ICONS ON RIGHT SIDE */
+.check-icon{
+  margin-left: auto;
+  opacity: 0.7;
+}
+
   </style>
 </head>
 
@@ -257,23 +386,51 @@
     <div><span class="legend-rail"></span> Railway</div>
   </div>
 
-  <!-- BOX 2: DISPLAY CONTROLS -->
-  <div class="panel-box">
-    <div class="section-label">PUV ROUTE ELEMENTS</div>
 
-    <label><input type="checkbox" id="od" checked> OD Direction</label>
-    <label><input type="checkbox" id="do" checked> DO Direction</label>
-    <label><input type="checkbox" id="arrows" checked> Direction Arrows</label>
-    <label><input type="checkbox" id="endpoints" checked> Endpoints</label>
-    <label><input type="checkbox" id="stops" checked> Stops</label>
+<!-- BOX 2: DISPLAY CONTROLS -->
+<div class="panel-box">
 
-    <div class="divider"></div>
+  <div class="panel-title">DISPLAY CONTROLS</div>
 
-    <div class="section-label">OTHER TRANSPORTATION</div>
+  <div class="panel-section">PUV Route Elements</div>
 
-    <label><input type="checkbox" id="rail" checked> Railways</label>
-  </div>
+  <label>
+    <input type="checkbox" id="od" checked>
+    OD Direction
+  </label>
 
+  <label>
+    <input type="checkbox" id="do" checked>
+    DO Direction
+  </label>
+
+  <label>
+    <input type="checkbox" id="arrows" checked>
+    Direction Arrows
+    <span class="check-icon">&lt;</span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="endpoints" checked>
+    Endpoints
+    <span class="check-icon">◇</span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="stops" checked>
+    Stops
+    <span class="check-icon">o</span>
+  </label>
+
+  <div class="panel-section">Other Transportation</div>
+
+  <label>
+    <input type="checkbox" id="rail" checked>
+    Railways
+    <span class="check-icon">━━━━━</span>
+  </label>
+
+</div>
 </div>
 
 <div id="route-popup-list" style="
@@ -549,8 +706,6 @@ style: feature => ({
 let highlightedLayers = [];
 
 layer.on('mouseover', function(e){
-
-if(routeSelectionActive) return;
 
   const latlng = e.latlng;
 
