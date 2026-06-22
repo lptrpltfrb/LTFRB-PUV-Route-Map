@@ -504,6 +504,12 @@ map.getPane('popupPane').style.zIndex = 1200;
   map.createPane('endpointsDOPane');
   map.createPane('endpointsODPane');
 
+  map.createPane('railPane');
+  map.getPane('railPane').style.zIndex = 200; 
+
+  map.createPane('sleeperPane');
+  map.getPane('sleeperPane').style.zIndex = 201;
+
   map.createPane('highlightPane');
   map.getPane('highlightPane').style.zIndex = 2000; // above all routes, stops, endpoints
 
@@ -518,7 +524,6 @@ const hoverHighlightLayer = L.geoJSON(null, {
   pane: 'highlightPane'
 }).addTo(map);
 
-
 // ===== SELECTED ROUTE HIGHLIGHT LAYER =====
 
 const highlightLayer = L.geoJSON([], {
@@ -529,8 +534,8 @@ const highlightLayer = L.geoJSON([], {
   }
 }).addTo(map);
 
-  map.getPane('doPane').style.zIndex = 400;
-  map.getPane('odPane').style.zIndex = 450;
+  map.getPane('doPane').style.zIndex = 500;
+  map.getPane('odPane').style.zIndex = 510;
   map.getPane('arrowsPane').style.zIndex = 500;
   map.getPane('stopsPane').style.zIndex = 600;
   map.getPane('endpointsDOPane').style.zIndex = 700;
@@ -539,6 +544,23 @@ const highlightLayer = L.geoJSON([], {
   // ==== LAYERS ====
 let routesLayer;
 let trainTracks = [];
+const SHOW_SLEEPERS = false;
+
+const getRailWeight = (z) => {
+  if (z >= 14) return 4;
+  if (z >= 12) return 3;
+  if (z >= 10) return 2;
+  if (z >= 8) return 1.5;
+  return 1;
+};
+
+const getSleeperSize = (z) => {
+  if (z >= 14) return 10;
+  if (z >= 12) return 8;
+  if (z >= 10) return 6;
+  if (z >= 8) return 4;
+  return 0;
+};
 
 const routeColorLookup = {};
 let hoverTooltip = null;
@@ -547,6 +569,8 @@ let clickedLayers = [];        // all routes found at clicked point
 let selectedRouteLayers = [];  // route selected from list
 
 let routeSelectionActive = false;
+
+let railwayReady = false;
 
 let selectedDetailPopup = null;
 
@@ -564,6 +588,7 @@ setTimeout(() => {
 },100);
 
   const trainLayer = L.layerGroup().addTo(map);
+  const railGroup = L.layerGroup().addTo(map);
 
   map.on('click', function(){
 
@@ -861,7 +886,7 @@ layer._decorator = decorator;
 
 setTimeout(() => {
   map.fire('zoomend');
-}, 100);
+}, 300);
 
 
   })
@@ -941,13 +966,13 @@ function toggleLayers() {
   });
 
   // ===== RAILWAYS =====
-  if (showRailways) {
-    map.addLayer(trainLayer);
-    if (zoom >= 14) map.addLayer(trainStations);
-  } else {
-    map.removeLayer(trainLayer);
-    map.removeLayer(trainStations);
-  }
+if (showRailways) {
+  map.addLayer(railGroup);
+  if (zoom >= 14) map.addLayer(trainStations);
+} else {
+  map.removeLayer(railGroup);
+  map.removeLayer(trainStations);
+}
 
 }
 
@@ -962,24 +987,42 @@ function toggleLayers() {
   .then(res => res.json())
   .then(data => {
     data.features.forEach(feature => {
-      if(feature.properties.type==="LINE") {
-const track = L.geoJSON(feature, {
-  style:{
-    color:"#2f2f2f",
-    weight:2,
-    opacity:0.9
+if (feature.properties.type === "LINE") {
+
+  let lines = [];
+
+  // normalize geometry (IMPORTANT)
+  if (feature.geometry.type === "LineString") {
+    lines = [feature.geometry.coordinates];
   }
-}).addTo(trainLayer);
 
-track.bindPopup(`<b>${feature.properties.line || ''}</b>`);
+  if (feature.geometry.type === "MultiLineString") {
+    lines = feature.geometry.coordinates;
+  }
 
-trainTracks.push(track);
+  lines.forEach(line => {
 
-        const sleepers = L.polylineDecorator(track, {
-          patterns: [{ offset:0, repeat:20, symbol:L.Symbol.dash({ pixelSize:12, pathOptions:{ color:"#B8860B", weight:4 } }) }]
-        });
-        trainLayer.addLayer(sleepers);
-      }
+    const coords = line.map(c => [c[1], c[0]]);
+
+    // ===== MAIN RAIL (THINNER = BETTER TRACK LOOK) =====
+const railMain = L.polyline(coords, {
+  pane: 'railPane',
+  color: "#2b2b2b",
+  weight: getRailWeight(map.getZoom()),
+  opacity: 1,
+  lineCap: "round"
+}).addTo(railGroup);
+
+
+trainTracks.push({
+  rail: railMain,
+  sleeper: null
+});
+
+    railMain.bindPopup(feature.properties.line || '');
+  });
+}
+
       if(feature.properties.type==="STATION") {
         const coords = feature.geometry.coordinates;
         const marker = L.marker([coords[1], coords[0]], {icon:trainIcon});
@@ -988,52 +1031,115 @@ trainTracks.push(track);
       }
     });
     map.addLayer(trainLayer);
+
+    railwayReady = true;
+    map.fire('zoomend');
+
   })
   .catch(err=>console.error("TRAIN DATA ERROR:",err));
 
+const forceSleeperVisibility = () => {
+};
+
+
 map.on('zoomend', () => {
   const zoom = map.getZoom();
-  const showOD = document.getElementById("od").checked;
-  const showDO = document.getElementById("do").checked;
+  const size = getSleeperSize(zoom);
 
-  // Route thickness by zoom
+  // ===== ROUTE WEIGHT =====
   let routeWeight = 1;
+  if (zoom >= 14) routeWeight = 4;
+  else if (zoom >= 12) routeWeight = 3;
+  else if (zoom >= 9) routeWeight = 2;
 
-  if (zoom >= 14) {
-    routeWeight = 4;
-  } else if (zoom >= 12) {
-    routeWeight = 3;
-  } else if (zoom >= 9) {
-    routeWeight = 2;
+  // ===== TRAIN RAIL WEIGHT =====
+  const trainWeight =
+    zoom >= 14 ? 8 :
+    zoom >= 12 ? 6 :
+    zoom >= 9 ? 4 : 2;
+
+  // ===== UPDATE TRAIN LINES =====
+  trainTracks.forEach(obj => {
+
+    // update main rail thickness (clean single source of truth)
+    if (obj.rail) {
+      obj.rail.setStyle({
+        weight: getRailWeight(zoom)
+      });
+    }
+
+    // remove old sleeper
+    if (obj.sleeper) {
+      railGroup.removeLayer(obj.sleeper);
+      obj.sleeper = null;
+    }
+
+    // hide sleepers if too zoomed out
+if (zoom < 12) {
+  if (obj.sleeper) {
+    map.removeLayer(obj.sleeper);
+    obj.sleeper = null;
   }
-
-let trainWeight = 2;
-
-if (zoom >= 14) {
-  trainWeight = 8;
-} else if (zoom >= 12) {
-  trainWeight = 6;
-} else if (zoom >= 9) {
-  trainWeight = 4;
+  return;
 }
 
-trainTracks.forEach(track => {
-  track.setStyle({ weight: trainWeight });
+
+let repeatValue =
+  zoom >= 14 ? 18 :
+  zoom >= 12 ? 25 :
+  zoom >= 10 ? 35 :
+  50;
+
+if (obj.sleeper) {
+  map.removeLayer(obj.sleeper);
+}
+
+obj.sleeper = L.polylineDecorator(obj.rail, {
+  patterns: [{
+    offset: 0,
+    repeat: repeatValue,
+
+    symbol: L.Symbol.marker({
+      rotate: true,
+      markerOptions: {
+        pane: 'sleeperPane',   // 🔥 IMPORTANT ADDITION
+        icon: L.divIcon({
+          className: '',
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+          html: `<div style="
+            width:${zoom >= 14 ? 18 : zoom >= 12 ? 14 : 10}px;
+            height:3px;
+            background:#111;
+            transform: translate(-50%, -50%);
+          "></div>`
+        })
+      }
+    })
+  }]
 });
 
 
-if (routesLayer) {
-  routesLayer.eachLayer(layer => {
-    if (!layer._isSelected) {
-      layer.setStyle({ weight: routeWeight });
-    }
+obj.sleeper.addTo(railGroup);
+obj.sleeper.setZIndexOffset?.(1000);
+
   });
-}
 
-  // Train stations
-  if(zoom>=14) map.addLayer(trainStations); else map.removeLayer(trainStations);
+
+  // ===== ROUTES STYLE UPDATE =====
+  if (routesLayer) {
+    routesLayer.eachLayer(layer => {
+      if (!layer._isSelected) {
+        layer.setStyle({ weight: routeWeight });
+      }
+    });
+  }
+
+  // ===== STATIONS =====
+  if (zoom >= 14) map.addLayer(trainStations);
+  else map.removeLayer(trainStations);
+
   toggleLayers();
-
 });
 
   // ==== PUV STOPS + ENDPOINTS ====
