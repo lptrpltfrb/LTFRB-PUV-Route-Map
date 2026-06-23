@@ -1,55 +1,1299 @@
-.legend-control{
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Route Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JS -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Polyline Decorator -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+
+  <style>
+    body { margin:0; padding:0; }
+    #map { height: 100vh; width: 100vw; }
+
+#route-control {
+
+  position: absolute;
+
+  top: 15px;
+  left: 10px;
+  right: 10px;
+
+
+  z-index: 1000;
+
+  background: rgba(255,255,255,0.95);
+
+  padding: 6px 12px;
+
+  border-radius: 8px;
+
+  font-family: Arial;
+  font-size: 13px;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+    #route-control b { margin-right: 8px; }
+    #route-control label { cursor: pointer; }
+#zoom-container{
+  margin-left:auto;
+}
+
+.hover-tooltip {
+  pointer-events: none;
+  z-index: 9999;
+}
+
+#agency-logos{
   display:flex;
+  justify-content:center;   /* <-- centers horizontally */
   align-items:center;
   gap:10px;
-  font-size:12px;
+  width:100%;
 }
 
-/* shared legend slot (middle column) */
-.legend-sample{
-  width:24px;
+#agency-logos img {
+  height: 28px;
+  width: auto;
+}
+
+#agency-logos .ltfrb-logo {
+  height: 40px; /* LTFRB bigger in the middle */
+}
+
+
+#legend {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  margin-top: 8px;
+
+  background: rgba(255,255,255,0.95);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: Arial;
+  font-size: 11px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+
+.legend-title{
+  font-weight:bold;
+  margin-bottom:6px;
+  border-bottom:1px solid #ccc;
+  padding-bottom:4px;
+}
+
+.legend-line{
   display:inline-block;
+  width:22px;
+  height:4px;
+  margin-right:6px;
+  vertical-align:middle;
 }
 
-/* OD / DO line samples */
-.legend-sample.line{
-  height:3px;
-  border-radius:2px;
-}
-
-.legend-sample.line.od{
-  background:#00FFFF;
-}
-
-.legend-sample.line.do{
-  background:#0088FF;
-}
-
-/* arrow sample */
-.legend-sample.arrow::before{
-  content:"➤";
-  font-size:12px;
+.legend-stop{
   display:inline-block;
-}
-
-/* endpoint sample (diamond) */
-.legend-sample.endpoint{
-  width:10px;
-  height:10px;
-  background:#000;
-  transform:rotate(45deg);
-}
-
-/* stop sample (circle) */
-.legend-sample.stop{
   width:10px;
   height:10px;
   border-radius:50%;
-  background:#000;
+  background:black;
+  margin-right:6px;
 }
 
-/* rail sample */
-.legend-sample.rail{
+.legend-endpoint{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  background:black;
+  transform:rotate(45deg);
+  margin-right:6px;
+}
+
+.legend-rail{
+  display:inline-block;
+  width:22px;
   height:4px;
   background:#2f2f2f;
+  margin-right:6px;
 }
+
+
+.display-title{
+  font-size:16px;
+  font-weight:bold;
+  color:white;
+  background:#1e88e5;
+  padding:4px 12px;
+  border-radius:20px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+.section-label{
+  font-weight:bold;
+  color:#555;
+}
+
+.divider{
+  width:1px;
+  height:24px;
+  background:#bbb;
+}
+
+
+/* ===== SIDEBAR MAIN BOX ===== */
+#sidebar{
+  position:absolute;
+  top:15px;
+  left:10px;
+  z-index:1000;
+
+  width:320px;
+  background:rgba(255,255,255,0.96);
+  border-radius:10px;
+  padding:12px;
+
+  font-family:Arial;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.panel-box{
+  background: rgba(255,255,255,0.96);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+
+/* ===== HEADER ===== */
+#sidebar-header{
+  text-align:center;
+}
+
+#sidebar-title{
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 20px;              /* 🔥 BIGGER than legend */
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 1.8px;
+  line-height: 1.1;
+  margin-top: 10px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+/* ===== DISPLAY SECTION ===== */
+/* ===== DISPLAY CONTROLS ===== */
+#display-controls{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  font-size:13px;
+}
+
+/* TITLE */
+.display-box-title{
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+/* SECTION HEADERS */
+.section-label{
+  font-weight:bold;
+  color:#444;
+  margin-top:6px;
+}
+
+/* ===== ICON ALIGNMENT ROW (THIS IS STEP 2) ===== */
+.control-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:2px 0;
+}
+
+.control-left{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.control-icon{
+  width:18px;
+  text-align:center;
+  font-size:14px;
+}
+
+.divider{
+  width:100%;
+  height:1px;
+  background:#ccc;
+  margin:6px 0;
+}
+
+#display-controls label{
+  cursor:pointer;
+}
+
+/* ICON ALIGNMENT ROW (DISPLAY CONTROL STYLE) */
+.panel-box label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+}
+
+/* RIGHT SIDE ICON COLUMN */
+.check-icon{
+  margin-left:auto;
+  opacity:0.8;
+  min-width:24px;
+  text-align:right;
+}
+
+/* ICON STYLE MATCH LEGEND */
+.icon-stop{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:black;
+  display:inline-block;
+}
+
+.icon-endpoint{
+  width:10px;
+  height:10px;
+  background:black;
+  transform:rotate(45deg);
+  display:inline-block;
+}
+
+.icon-rail{
+  width:22px;
+  height:4px;
+  background:#2f2f2f;
+  display:inline-block;
+}
+
+/* ===== PANEL BOX (LEGEND + DISPLAY) ===== */
+.panel-box{
+  background: rgba(255,255,255,0.96);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* TITLE INSIDE DISPLAY BOX */
+.panel-title{
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  color: #222;
+}
+
+/* SECTION HEADERS */
+.panel-section{
+  font-weight: 700;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+/* CHECKBOX ROW STYLE */
+.panel-box label{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+/* ICONS ON RIGHT SIDE */
+.check-icon{
+  margin-left: auto;
+  opacity: 0.7;
+}
+
+  </style>
+</head>
+
+<body>
+<div id="map"></div>
+<div id="sidebar">
+
+  <!-- HEADER -->
+  <div id="sidebar-header">
+    <div id="agency-logos">
+      <img src="Department_of_Transportation_(Philippines).png">
+      <img src="LTFRB_Seal.png" class="ltfrb-logo">
+      <img src="Bagong_Pilipinas_Logo.png">
+    </div>
+
+<div id="sidebar-title">
+  LAND TRANSPORTATION<br>
+  PUBLIC UTILITY VEHICLE<br>
+  ROUTE MAP
+</div>
+
+  </div>
+
+  <!-- BOX 1: LEGEND -->
+  <div class="panel-box">
+    <div class="legend-title">LEGEND</div>
+
+    <div><span class="legend-line" style="background:#00FFFF;"></span> PUJ OD</div>
+    <div><span class="legend-line" style="background:#0088FF;"></span> PUJ DO</div>
+    <div><span class="legend-line" style="background:#FF00FF;"></span> UVE OD</div>
+    <div><span class="legend-line" style="background:#B000FF;"></span> UVE DO</div>
+    <div><span class="legend-line" style="background:#00FF66;"></span> Mini Bus OD</div>
+    <div><span class="legend-line" style="background:#00AA44;"></span> Mini Bus DO</div>
+    <div><span class="legend-line" style="background:#FFD700;"></span> PUB OD</div>
+    <div><span class="legend-line" style="background:#FF8C00;"></span> PUB DO</div>
+    <div><span class="legend-line" style="background:#FF4444;"></span> P2P OD</div>
+    <div><span class="legend-line" style="background:#800000;"></span> P2P DO</div>
+
+    <hr>
+
+    <div><span class="legend-stop"></span> Stop</div>
+    <div><span class="legend-endpoint"></span> Endpoint</div>
+    <div><span class="legend-rail"></span> Railway</div>
+  </div>
+
+
+<!-- BOX 2: DISPLAY CONTROLS -->
+<div class="panel-box">
+
+  <div class="panel-title">DISPLAY CONTROLS</div>
+
+  <div class="panel-section">PUV Route Elements</div>
+
+  <label>
+    <input type="checkbox" id="od" checked>
+    OD Direction
+  </label>
+
+  <label>
+    <input type="checkbox" id="do" checked>
+    DO Direction
+  </label>
+
+  <label>
+    <input type="checkbox" id="arrows" checked>
+    Direction Arrows
+    <span class="check-icon">&lt;</span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="endpoints" checked>
+    Endpoints
+    <span class="check-icon">◇</span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="stops" checked>
+    Stops
+    <span class="check-icon">o</span>
+  </label>
+
+  <div class="panel-section">Other Transportation</div>
+
+  <label>
+    <input type="checkbox" id="rail" checked>
+    Railways
+    <span class="check-icon">━━━━━</span>
+  </label>
+
+</div>
+</div>
+
+<div id="route-popup-list" style="
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 220px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-family: Arial;
+  font-size: 14px;
+  z-index: 1300;
+  display: none;
+"></div>
+
+<div id="route-detail-panel" style="
+  position: absolute;
+  bottom: 20px;
+  right: 250px;
+  width: 220px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid #999;
+  padding: 8px;
+  font-family: Arial;
+  font-size: 14px;
+  z-index: 1400;
+  display: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+">
+  <div id="detail-arrow" style="
+    position:absolute;
+    right:-10px;
+    top:20px;
+    width:0;
+    height:0;
+    border-top:10px solid transparent;
+    border-bottom:10px solid transparent;
+    border-left:10px solid white;
+  "></div>
+
+  <div id="detail-content"></div>
+</div>
+
+<script>
+  // ==== MAP INIT ====
+const map = L.map('map', {
+  zoomControl:false
+}).setView([12.8797, 121.7740], 6);
+map.createPane('popupPane');
+map.getPane('popupPane').style.zIndex = 1200;
+
+
+  L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    subdomains: ['mt0','mt1','mt2','mt3']
+  }).addTo(map);
+
+  // ==== PANES (z-index control) ====
+  map.createPane('doPane');
+  map.createPane('odPane');
+  map.createPane('arrowsPane');
+  map.createPane('stopsPane');
+  map.createPane('endpointsPane');
+
+  map.createPane('endpointsDOPane');
+  map.createPane('endpointsODPane');
+
+  map.createPane('railPane');
+  map.getPane('railPane').style.zIndex = 200; 
+
+  map.createPane('sleeperPane');
+  map.getPane('sleeperPane').style.zIndex = 201;
+
+  map.createPane('highlightPane');
+  map.getPane('highlightPane').style.zIndex = 2000; // above all routes, stops, endpoints
+
+// dedicated geoJSON layer for hover highlights (temporary)
+const hoverHighlightLayer = L.geoJSON(null, {
+  interactive: false,
+  style: {
+    color: '#FFFF00',
+    weight: 5,
+    opacity: 1
+  },
+  pane: 'highlightPane'
+}).addTo(map);
+
+// ===== SELECTED ROUTE HIGHLIGHT LAYER =====
+
+const highlightLayer = L.geoJSON([], {
+  pane: 'highlightPane',
+  style: {
+    color: '#FFFF00',
+    weight: 8
+  }
+}).addTo(map);
+
+  map.getPane('doPane').style.zIndex = 500;
+  map.getPane('odPane').style.zIndex = 510;
+  map.getPane('arrowsPane').style.zIndex = 500;
+  map.getPane('stopsPane').style.zIndex = 600;
+  map.getPane('endpointsDOPane').style.zIndex = 700;
+  map.getPane('endpointsODPane').style.zIndex = 701;
+
+  // ==== LAYERS ====
+let routesLayer;
+let trainTracks = [];
+const SHOW_SLEEPERS = false;
+
+const getRailWeight = (z) => {
+  if (z >= 14) return 4;
+  if (z >= 12) return 3;
+  if (z >= 10) return 2;
+  if (z >= 8) return 1.5;
+  return 1;
+};
+
+const getSleeperSize = (z) => {
+  if (z >= 14) return 10;
+  if (z >= 12) return 8;
+  if (z >= 10) return 6;
+  if (z >= 8) return 4;
+  return 0;
+};
+
+const routeColorLookup = {};
+let hoverTooltip = null;
+
+let clickedLayers = [];        // all routes found at clicked point
+let selectedRouteLayers = [];  // route selected from list
+
+let routeSelectionActive = false;
+
+let railwayReady = false;
+
+let selectedDetailPopup = null;
+
+const zoomControl = L.control.zoom({
+  position:'topright'
+});
+
+zoomControl.addTo(map);
+
+setTimeout(() => {
+
+  const zoomEl =
+    document.querySelector('.leaflet-control-zoom');
+
+},100);
+
+  const trainLayer = L.layerGroup().addTo(map);
+  const railGroup = L.layerGroup().addTo(map);
+
+  map.on('click', function(){
+
+clickedLayers = [];
+
+hoverHighlightLayer.clearLayers();
+
+
+selectedRouteLayers.forEach(l => {
+
+  l.setStyle({
+    color: l.feature.properties.routeColor,
+    weight: l.feature.properties.routeWeight
+  });
+
+});
+
+selectedRouteLayers = [];
+highlightLayer.clearLayers();
+
+  document.getElementById('route-popup-list').style.display = 'none';
+
+  document.getElementById('route-popup-list').innerHTML = '';
+
+  document.getElementById('route-detail-panel').style.display = 'none';
+
+  if(selectedDetailPopup){
+    map.closePopup(selectedDetailPopup);
+    selectedDetailPopup = null;
+  }
+
+});
+
+
+function getRouteColor(deno, direction) {
+
+  const colors = {
+    "PUJ": {
+      OD: "#00FFFF",
+      DO: "#0088FF"
+    },
+
+    "UVE": {
+      OD: "#FF00FF",
+      DO: "#B000FF"
+    },
+
+    "Mini bus": {
+      OD: "#00FF66",
+      DO: "#00AA44"
+    },
+
+    "PUB": {
+      OD: "#FFD700",
+      DO: "#FF8C00"
+    },
+
+    "P2P": {
+      OD: "#FF4444",
+      DO: "#800000"
+    }
+  };
+
+  return colors[deno]?.[direction] || "#FFFFFF";
+}
+
+function distanceToPolyline(latlng, layer){
+
+  let minDist = Infinity;
+
+  const latlngs = layer.getLatLngs().flat();
+
+  for(let i=0;i<latlngs.length-1;i++){
+
+    const p = map.latLngToLayerPoint(latlng);
+
+    const p1 = map.latLngToLayerPoint(latlngs[i]);
+
+    const p2 = map.latLngToLayerPoint(latlngs[i+1]);
+
+    const dist =
+      L.LineUtil.pointToSegmentDistance(
+        p,
+        p1,
+        p2
+      );
+
+    if(dist < minDist){
+      minDist = dist;
+    }
+
+  }
+
+  return minDist;
+}
+
+  const trainStations = L.layerGroup();
+  const stopsLayer = L.layerGroup();
+  const endpointsLayer = L.layerGroup();
+
+  // ==== FETCH PUV ROUTES ====
+  fetch('https://script.google.com/macros/s/AKfycbxolZFkDl6WzZXooeJ_KReQHFHHbLN6_hMhsag9PCZep-ZERkHbudSkczOOCAg4Kvkegw/exec')
+  .then(res => res.json())
+  .then(data => {
+    const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
+validFeatures.forEach(feature => {
+
+  const routeName = feature.properties.route_name;
+  const direction = feature.properties.direction;
+  const deno = feature.properties.deno;
+
+  const routeColor = getRouteColor(deno, direction);
+
+  routeColorLookup[
+    routeName + "_" + direction
+  ] = routeColor;
+
+  feature.properties.routeColor = routeColor;
+  feature.properties.routeWeight = 3; // same as initial style weight
+
+});
+
+    routesLayer = L.geoJSON(validFeatures, {
+style: feature => ({
+  color: getRouteColor(
+    feature.properties.deno,
+    feature.properties.direction
+  ),
+  weight: 3
+}),
+
+
+
+      onEachFeature: (feature, layer) => {
+        // Assign OD/DO pane
+        layer.options.pane = feature.properties.direction === "OD" ? "odPane" : "doPane";
+
+        const p = feature.properties || {};
+
+let highlightedLayers = [];
+
+layer.on('mouseover', function(e){
+
+  const latlng = e.latlng;
+
+  // clear previous hover highlight
+  hoverHighlightLayer.clearLayers();
+
+  const routesToHighlight = [];
+
+  // highlight both OD and DO of any route near the cursor
+  routesLayer.eachLayer(l => {
+    if(distanceToPolyline(latlng, l) <= 10){
+      routesToHighlight.push(l.feature);
+    }
+  });
+
+  // draw them on top using dedicated hoverHighlightLayer
+  hoverHighlightLayer.addData(routesToHighlight);
+
+  // tooltip
+  const uniqueRoutes = new Set();
+  routesToHighlight.forEach(f => uniqueRoutes.add(f.properties.route_name));
+
+  if(hoverTooltip) map.removeLayer(hoverTooltip);
+
+hoverTooltip = L.tooltip({
+  permanent: false,
+  direction: 'top',
+  className: 'hover-tooltip',
+  pane: 'highlightPane',   // IMPORTANT FIX
+  interactive: false        // IMPORTANT FIX
+})
+
+  .setLatLng(latlng)
+  .setContent(uniqueRoutes.size + " Routes")
+  .addTo(map);
+});
+
+
+layer.on('click', function(e){
+  L.DomEvent.stopPropagation(e);
+  const latlng = e.latlng;
+
+  // DO NOT reset clickedLayers here! Only collect routes at click point
+  const clickedRoutes = new Set();
+  const clickedLayersTemp = [];
+
+  routesLayer.eachLayer(l => {
+    if(distanceToPolyline(latlng, l) <= 10){
+      clickedRoutes.add(l.feature.properties.route_name);
+      clickedLayersTemp.push(l);
+    }
+  });
+
+  clickedLayers = clickedLayersTemp; // store all clicked routes
+
+  routeSelectionActive = true;
+
+// REMOVE previous selected route highlight
+highlightLayer.clearLayers();
+selectedRouteLayers = [];
+
+// hide detail panel
+document.getElementById('route-detail-panel').style.display = 'none';
+
+// ADD overlap highlight for all clicked routes
+hoverHighlightLayer.clearLayers();
+clickedLayers.forEach(l => hoverHighlightLayer.addData(l.toGeoJSON()));
+
+  // remove old selected route highlight
+highlightLayer.clearLayers();
+
+selectedRouteLayers = [];
+
+// hide old route details
+document.getElementById('route-detail-panel').style.display = 'none';
+
+// keep overlap highlight visible
+hoverHighlightLayer.clearLayers();
+
+clickedLayers.forEach(l => {
+  hoverHighlightLayer.addData(l.toGeoJSON());
+});
+const popupListDiv = document.getElementById('route-popup-list');
+popupListDiv.style.display = 'block';
+popupListDiv.innerHTML =
+  '<b>Routes at this point:</b><br>' +
+  [...clickedRoutes].map(r =>
+    '<div class="route-item" data-route="' + r + '" style="cursor:pointer;padding:2px 0;">• ' + r + '</div>'
+  ).join('');
+
+if(hoverTooltip){
+  map.removeLayer(hoverTooltip);
+  hoverTooltip = null;
+}
+
+});
+
+layer.on('mouseout', function(){
+
+  // ONLY clear hover highlights if we are NOT in selection mode
+  if(!routeSelectionActive){
+    hoverHighlightLayer.clearLayers();
+  }
+
+  if(hoverTooltip){
+    map.removeLayer(hoverTooltip);
+    hoverTooltip = null;
+  }
+});
+
+        // Add arrows
+        const latlngs = layer.getLatLngs().flat();
+        let totalLength = 0;
+        for(let i=0;i<latlngs.length-1;i++) totalLength += latlngs[i].distanceTo(latlngs[i+1]);
+        if(!totalLength) return;
+        const repeat = (500 / totalLength) * 100;
+
+const decorator = L.polylineDecorator(layer, {
+  pane: 'arrowsPane',
+  patterns: [
+    // Black outline behind
+    {
+      offset: 0,
+      repeat: repeat + '%',
+      symbol: L.Symbol.arrowHead({
+        pixelSize: 12,      // slightly bigger
+        polygon: false,
+        pathOptions: {
+          color: "#000000", // black outline
+          weight: 5
+        }
+      })
+    },
+    // Colored arrow on top
+    {
+      offset: 0,
+      repeat: repeat + '%',
+      symbol: L.Symbol.arrowHead({
+        pixelSize: 10,
+        polygon: false,
+        pathOptions: {
+          color: getRouteColor(feature.properties.deno, feature.properties.direction),
+          weight: 2
+        }
+      })
+    }
+  ]
+});
+layer._decorator = decorator;
+
+      }
+    }).addTo(map);
+
+setTimeout(() => {
+  map.fire('zoomend');
+}, 300);
+
+
+  })
+  .catch(err => { console.error(err); alert("Failed to load PUV route data"); });
+
+// CHECKBOX EVENT LISTENERS
+["od","do","arrows","endpoints","stops","rail"].forEach(id=>{
+    document.getElementById(id).addEventListener("change", toggleLayers);
+});
+
+function toggleLayers() {
+
+  const showOD = document.getElementById("od").checked;
+  const showDO = document.getElementById("do").checked;
+  const showArrows = document.getElementById("arrows").checked;
+  const showEndpoints = document.getElementById("endpoints").checked;
+  const showStops = document.getElementById("stops").checked;
+  const showRailways = document.getElementById("rail").checked;
+
+  const zoom = map.getZoom();
+
+  // ===== ROUTES =====
+  if (routesLayer) {
+    routesLayer.eachLayer(layer => {
+
+      const dir = layer.feature.properties.direction;
+
+      const visible =
+        (dir === "OD" && showOD) ||
+        (dir === "DO" && showDO);
+
+      layer.setStyle({
+        opacity: visible ? 1 : 0
+      });
+
+      // arrows
+      if (layer._decorator) {
+        if (visible && showArrows && zoom >= 14) {
+          map.addLayer(layer._decorator);
+        } else {
+          map.removeLayer(layer._decorator);
+        }
+      }
+    });
+  }
+
+  // ===== STOPS (FIXED) =====
+  stopsLayer.eachLayer(l => {
+
+    const visible =
+      ((l._direction === "OD" && showOD) ||
+       (l._direction === "DO" && showDO)) &&
+      showStops &&
+      zoom >= 14;
+
+    if (visible) {
+      map.addLayer(l);
+    } else {
+      map.removeLayer(l);
+    }
+  });
+
+  // ===== ENDPOINTS (FIXED) =====
+  endpointsLayer.eachLayer(l => {
+
+    const visible =
+      ((l._direction === "OD" && showOD) ||
+       (l._direction === "DO" && showDO)) &&
+      showEndpoints &&
+      zoom >= 14;
+
+    if (visible) {
+      map.addLayer(l);
+    } else {
+      map.removeLayer(l);
+    }
+  });
+
+  // ===== RAILWAYS =====
+if (showRailways) {
+  map.addLayer(railGroup);
+  if (zoom >= 14) map.addLayer(trainStations);
+} else {
+  map.removeLayer(railGroup);
+  map.removeLayer(trainStations);
+}
+
+}
+
+  // ==== TRAIN LINES + STATIONS ====
+  const trainIcon = L.icon({
+    iconUrl: "https://img.icons8.com/emoji/48/000000/train-emoji.png",
+    iconSize: [24,24],
+    iconAnchor: [12,12]
+  });
+
+  fetch('https://script.google.com/macros/s/AKfycbwMZDfBZzuke-x2Sph6IXMwB4-b6jNPv5nY3Gut-7lb1i1z9tOAFLVxVXN5CRQjOKuL5Q/exec')
+  .then(res => res.json())
+  .then(data => {
+    data.features.forEach(feature => {
+if (feature.properties.type === "LINE") {
+
+  let lines = [];
+
+  // normalize geometry (IMPORTANT)
+  if (feature.geometry.type === "LineString") {
+    lines = [feature.geometry.coordinates];
+  }
+
+  if (feature.geometry.type === "MultiLineString") {
+    lines = feature.geometry.coordinates;
+  }
+
+  lines.forEach(line => {
+
+    const coords = line.map(c => [c[1], c[0]]);
+
+    // ===== MAIN RAIL (THINNER = BETTER TRACK LOOK) =====
+const railMain = L.polyline(coords, {
+  pane: 'railPane',
+  color: "#2b2b2b",
+  weight: getRailWeight(map.getZoom()),
+  opacity: 1,
+  lineCap: "round"
+}).addTo(railGroup);
+
+
+trainTracks.push({
+  rail: railMain,
+  sleeper: null
+});
+
+    railMain.bindPopup(feature.properties.line || '');
+  });
+}
+
+      if(feature.properties.type==="STATION") {
+        const coords = feature.geometry.coordinates;
+        const marker = L.marker([coords[1], coords[0]], {icon:trainIcon});
+        marker.bindPopup(feature.properties.station + " Sta.");
+        trainStations.addLayer(marker);
+      }
+    });
+    map.addLayer(trainLayer);
+
+    railwayReady = true;
+    map.fire('zoomend');
+
+  })
+  .catch(err=>console.error("TRAIN DATA ERROR:",err));
+
+const forceSleeperVisibility = () => {
+};
+
+
+map.on('zoomend', () => {
+  const zoom = map.getZoom();
+  const size = getSleeperSize(zoom);
+
+  // ===== ROUTE WEIGHT =====
+  let routeWeight = 1;
+  if (zoom >= 14) routeWeight = 4;
+  else if (zoom >= 12) routeWeight = 3;
+  else if (zoom >= 9) routeWeight = 2;
+
+  // ===== TRAIN RAIL WEIGHT =====
+  const trainWeight =
+    zoom >= 14 ? 8 :
+    zoom >= 12 ? 6 :
+    zoom >= 9 ? 4 : 2;
+
+  // ===== UPDATE TRAIN LINES =====
+  trainTracks.forEach(obj => {
+
+    // update main rail thickness (clean single source of truth)
+    if (obj.rail) {
+      obj.rail.setStyle({
+        weight: getRailWeight(zoom)
+      });
+    }
+
+    // remove old sleeper
+    if (obj.sleeper) {
+      railGroup.removeLayer(obj.sleeper);
+      obj.sleeper = null;
+    }
+
+    // hide sleepers if too zoomed out
+if (zoom < 12) {
+  if (obj.sleeper) {
+    map.removeLayer(obj.sleeper);
+    obj.sleeper = null;
+  }
+  return;
+}
+
+
+let repeatValue =
+  zoom >= 14 ? 18 :
+  zoom >= 12 ? 25 :
+  zoom >= 10 ? 35 :
+  50;
+
+if (obj.sleeper) {
+  map.removeLayer(obj.sleeper);
+}
+
+obj.sleeper = L.polylineDecorator(obj.rail, {
+  patterns: [{
+    offset: 0,
+    repeat: repeatValue,
+
+    symbol: L.Symbol.marker({
+      rotate: true,
+      markerOptions: {
+        pane: 'sleeperPane',   // 🔥 IMPORTANT ADDITION
+        icon: L.divIcon({
+          className: '',
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+          html: `<div style="
+            width:${zoom >= 14 ? 18 : zoom >= 12 ? 14 : 10}px;
+            height:3px;
+            background:#111;
+            transform: translate(-50%, -50%);
+          "></div>`
+        })
+      }
+    })
+  }]
+});
+
+
+obj.sleeper.addTo(railGroup);
+obj.sleeper.setZIndexOffset?.(1000);
+
+  });
+
+
+  // ===== ROUTES STYLE UPDATE =====
+  if (routesLayer) {
+    routesLayer.eachLayer(layer => {
+      if (!layer._isSelected) {
+        layer.setStyle({ weight: routeWeight });
+      }
+    });
+  }
+
+  // ===== STATIONS =====
+  if (zoom >= 14) map.addLayer(trainStations);
+  else map.removeLayer(trainStations);
+
+  toggleLayers();
+});
+
+  // ==== PUV STOPS + ENDPOINTS ====
+  fetch('https://script.google.com/macros/s/AKfycbwJuejtkX49SKerkEZsPktCC_63zn_bjZkyfiUfuht1r1_X_jqcHgtkACofaF1W7764pw/exec')
+  .then(res=>res.json())
+  .then(data=>{
+    data.features.forEach(feature=>{
+      const coords = feature.geometry.coordinates;
+      const latlng = [coords[1], coords[0]];
+      const dir = feature.properties.direction || feature.properties.DIRECTION;
+      const type = feature.properties.type || feature.properties.TYPE;
+const routeName = feature.properties.route_name;
+
+// Search for the key ignoring extra spaces
+const matchingKey = Object.keys(routeColorLookup).find(k =>
+    k.startsWith(routeName.trim()) && k.endsWith("_" + dir.trim())
+);
+
+const color = matchingKey ? routeColorLookup[matchingKey] : "#FF00FF";
+
+
+console.log({
+  routeName,
+  dir,
+  matchingKey,
+  color
+});
+
+
+if(!color){
+  console.log("NO COLOR FOUND:", key);
+}
+
+
+if(type==="Stops") {
+  const matchingKey = Object.keys(routeColorLookup).find(k =>
+      k.startsWith(routeName.trim()) && k.endsWith("_" + dir.trim())
+  );
+  const color = matchingKey ? routeColorLookup[matchingKey] : "#FF00FF";
+
+  const marker = L.circleMarker(latlng, {
+    pane:'stopsPane',
+    radius:5,
+    color:"#000000",
+    fillColor:color,
+    fillOpacity:1,
+    weight:2
+  });
+  marker._direction = dir;
+  marker.bindPopup(feature.properties.stop || feature.properties.STOP || "Stop");
+  stopsLayer.addLayer(marker);
+}
+
+if(type==="Endpoint") {
+  const matchingKey = Object.keys(routeColorLookup).find(k =>
+      k.startsWith(routeName.trim()) && k.endsWith("_" + dir.trim())
+  );
+  const color = matchingKey ? routeColorLookup[matchingKey] : "#FF00FF";
+
+  const paneName = dir === "OD" ? "endpointsODPane" : "endpointsDOPane";
+
+  const marker = L.marker(latlng, {
+    pane: paneName,
+    icon: L.divIcon({
+      className: 'diamond-endpoint',
+      iconSize: [12,12],
+      html: `<div style="
+        width:12px; height:12px; 
+        background:${color};
+        transform: rotate(45deg);
+        border: 2px solid #000;
+      "></div>`
+    })
+  });
+  marker._direction = dir;
+  marker.bindPopup(feature.properties.endpoint || feature.properties.ENDPOINT || "Endpoint");
+  endpointsLayer.addLayer(marker);
+}
+
+    });
+  })
+  .catch(err=>console.error("STOPS/ENDPOINTS ERROR:",err));
+document.getElementById('route-popup-list').addEventListener('click', function(e){
+
+  const item = e.target.closest('.route-item');
+
+  if(!item) return;
+
+const routeName = item.dataset.route;
+
+// REMOVE overlap highlight
+hoverHighlightLayer.clearLayers();
+
+// remove previous selected route highlight
+
+selectedRouteLayers.forEach(l => {
+
+  l.setStyle({
+    color: l.feature.properties.routeColor,
+    weight: l.feature.properties.routeWeight
+  });
+
+});
+
+selectedRouteLayers = [];
+
+// remove previous selected highlight
+highlightLayer.clearLayers();
+
+// clickedLayers.forEach(l => {
+//     l.setStyle({ 
+//       color: l.feature.properties.routeColor, 
+//       weight: l.feature.properties.routeWeight,
+//       pane: l.feature.properties.direction === "OD" ? 'odPane' : 'doPane'
+//     });
+// });
+// clickedLayers = [];
+
+
+  routesLayer.eachLayer(l => {
+
+    if(l.feature.properties.route_name === routeName){
+
+selectedRouteLayers.push(l);
+
+// add selected route geometry to highlight layer
+highlightLayer.addData(l.toGeoJSON());
+
+      const p = l.feature.properties;
+
+const html = `
+  <div style="font-size:15px;font-weight:bold;margin-bottom:8px;">
+    ${p.route_name}
+  </div>
+
+  <b>DENO:</b> ${p.deno || ''}<br>
+  <b>CLASS:</b> ${p.class || ''}<br>
+  <b>ROUTE TYPE:</b> ${p.route_study || ''}<br>
+  <b>ROUTE CLASS:</b> ${p.route_class || ''}<br>
+  <b>FLEET SIZE:</b> ${p.authorized_units || ''}<br>
+  <b>LENGTH:</b> ${p.route_length || ''} km<br>
+  <b>BR NO:</b> ${p.board_reso || ''}<br>
+  <b>MC NO:</b> ${p.mc_no || ''}
+`;
+
+document.getElementById('route-detail-panel').style.display = 'block';
+document.getElementById('detail-content').innerHTML = html;
+
+    }
+
+  });
+
+});
+
+</script>
+</body>
+</html>
