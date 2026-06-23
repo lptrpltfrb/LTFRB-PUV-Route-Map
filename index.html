@@ -1199,36 +1199,48 @@ const visible = dirVisible && legendVisible;
   }
 
   // ===== STOPS (FIXED) =====
-  stopsLayer.eachLayer(l => {
+stopsLayer.eachLayer(l => {
 
-    const visible =
-      ((l._direction === "OD" && showOD) ||
-       (l._direction === "DO" && showDO)) &&
-      showStops &&
-      zoom >= 14;
+  const key = `PUJ_${l._direction}`;
 
-    if (visible) {
-      map.addLayer(l);
-    } else {
-      map.removeLayer(l);
-    }
-  });
+  const legendVisible = legend[key] ?? true;
+
+  const visible =
+    ((l._direction === "OD" && showOD) ||
+     (l._direction === "DO" && showDO)) &&
+    showStops &&
+    zoom >= 14 &&
+    legendVisible;
+
+  if (visible) {
+    map.addLayer(l);
+  } else {
+    map.removeLayer(l);
+  }
+});
+
 
   // ===== ENDPOINTS (FIXED) =====
-  endpointsLayer.eachLayer(l => {
+endpointsLayer.eachLayer(l => {
 
-    const visible =
-      ((l._direction === "OD" && showOD) ||
-       (l._direction === "DO" && showDO)) &&
-      showEndpoints &&
-      zoom >= 14;
+  const key = `PUJ_${l._direction}`;
 
-    if (visible) {
-      map.addLayer(l);
-    } else {
-      map.removeLayer(l);
-    }
-  });
+  const legendVisible = legend[key] ?? true;
+
+  const visible =
+    ((l._direction === "OD" && showOD) ||
+     (l._direction === "DO" && showDO)) &&
+    showEndpoints &&
+    zoom >= 14 &&
+    legendVisible;
+
+  if (visible) {
+    map.addLayer(l);
+  } else {
+    map.removeLayer(l);
+  }
+});
+
 
   // ===== RAILWAYS =====
 if (showRailways) {
