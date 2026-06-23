@@ -158,6 +158,172 @@
   background:#bbb;
 }
 
+.legend-control{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+/* FIXED ICON SLOT (this is the key) */
+.legend-sample{
+  width: 28px;
+  height: 14px;
+  flex: 0 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legend-sample.line,
+.legend-sample.arrow,
+.legend-sample.stop,
+.legend-sample.endpoint,
+.legend-sample.rail{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
+/* TEXT ALIGNMENT BASELINE FIX */
+.legend-control{
+  line-height: 14px;
+}
+
+/* FORCE PERFECT CENTERING */
+.legend-sample.endpoint,
+.legend-sample.stop,
+.legend-sample.arrow,
+.legend-sample.line{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
+/* OD / DO line samples */
+.legend-sample.line{
+  height:3px;
+  border-radius:2px;
+}
+
+.legend-sample.line.od,
+.legend-sample.line.do{
+  position: relative;
+  background: #000;
+  height: 2px;
+}
+
+/* RIGHT ARROW (OD) */
+.legend-sample.line.od::after{
+  content: ">";
+  position: absolute;
+  right: 0px;
+  top: -6.25px;
+  font-size: 16px;
+  font-weight: 900; 
+}
+
+/* LEFT ARROW (DO) */
+.legend-sample.line.do::after{
+  content: ">";
+  position: absolute;
+  left: 4px;
+  top: -5.1px;
+  font-size: 16px;
+  font-weight: 900;
+  transform: rotate(180deg);
+}
+
+/* arrow sample */
+.legend-sample.arrow::before{
+  content:">";
+  font-size:16px;
+  font-weight: 900; 
+  display:inline-block;
+}
+
+/* endpoint sample (diamond) */
+.legend-sample.endpoint{
+  width: 10px;
+  height: 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: transparent;
+  transform: none; /* IMPORTANT: remove rotation from container */
+}
+
+.legend-sample.endpoint::before{
+  content:"";
+  width:10px;
+  height:10px;
+  background:#000;
+  transform: rotate(45deg);
+  display:block;
+}
+
+/* stop sample (circle) */
+.legend-sample.stop{
+  width: 28px;          /* SAME SLOT WIDTH as others */
+  height: 14px;         /* SAME SLOT HEIGHT */
+  flex: 0 0 28px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.legend-sample.stop::before{
+  content:"";
+  width:10px;
+  height:10px;
+  background:#000;
+  border-radius:50%;
+}
+
+
+/* rail sample */
+.legend-sample.rail {
+  position: relative;
+  width: 24px;
+  height: 6px;
+  display: inline-block;
+}
+
+/* base rail line */
+.legend-sample.rail::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #2f2f2f;
+  transform: translateY(-50%);
+}
+
+/* sleepers */
+.legend-sample.rail::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 10px;
+  transform: translateY(-50%);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 6px,
+    #2f2f2f 6px,
+    #2f2f2f 7px,
+    transparent 7px,
+    transparent 12px
+  );
+}
 
 /* ===== SIDEBAR MAIN BOX ===== */
 #sidebar{
@@ -443,49 +609,51 @@
   <!-- ===================== -->
   <!-- BOX 2: DISPLAY CONTROLS -->
   <!-- ===================== -->
-  <div class="panel-box">
+<div class="panel-box">
 
-    <div class="panel-title">DISPLAY CONTROLS</div>
+  <div class="panel-title">DISPLAY CONTROLS</div>
 
-    <div class="panel-section">PUV Route Elements</div>
+  <div class="panel-section">PUV Route Elements</div>
 
-    <label>
-      <input type="checkbox" id="od" checked>
-      OD Direction
-    </label>
+  <label class="legend-control">
+    <input type="checkbox" id="od" checked>
+    <span class="legend-sample line od"></span>
+    OD Direction
+  </label>
 
-    <label>
-      <input type="checkbox" id="do" checked>
-      DO Direction
-    </label>
+  <label class="legend-control">
+    <input type="checkbox" id="do" checked>
+    <span class="legend-sample line do"></span>
+    DO Direction
+  </label>
 
-    <label>
-      <input type="checkbox" id="arrows" checked>
-      Direction Arrows
-      <span class="check-icon">&lt;</span>
-    </label>
+  <label class="legend-control">
+    <input type="checkbox" id="arrows" checked>
+    <span class="legend-sample arrow"></span>
+    Direction Arrows
+  </label>
 
-    <label>
-      <input type="checkbox" id="endpoints" checked>
-      Endpoints
-      <span class="check-icon">◇</span>
-    </label>
+  <label class="legend-control">
+    <input type="checkbox" id="endpoints" checked>
+    <span class="legend-sample endpoint"></span>
+    Endpoints
+  </label>
 
-    <label>
-      <input type="checkbox" id="stops" checked>
-      Stops
-      <span class="check-icon">o</span>
-    </label>
+  <label class="legend-control">
+    <input type="checkbox" id="stops" checked>
+    <span class="legend-sample stop"></span>
+    Stops
+  </label>
 
-    <div class="panel-section">Other Transportation</div>
+  <div class="panel-section">Other Transportation</div>
 
-    <label>
-      <input type="checkbox" id="rail" checked>
-      Railways
-      <span class="check-icon">━━━━━</span>
-    </label>
+  <label class="legend-control">
+    <input type="checkbox" id="rail" checked>
+    <span class="legend-sample rail"></span>
+    Railways
+  </label>
 
-  </div>
+</div>
 
 </div>
 
