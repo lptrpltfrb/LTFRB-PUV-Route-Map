@@ -16,7 +16,10 @@
 <!-- Polyline Decorator -->
 <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 
-  <style>
+  
+
+
+<style>
     body { margin:0; padding:0; }
     #map { height: 100vh; width: 100vw; }
 
@@ -183,6 +186,10 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
+.panel-box + .panel-box{
+  margin-top: 10px;
+}
+
 
 /* ===== HEADER ===== */
 #sidebar-header{
@@ -201,7 +208,7 @@
   color: #1a1a1a;
 }
 
-/* ===== DISPLAY SECTION ===== */
+
 /* ===== DISPLAY CONTROLS ===== */
 #display-controls{
   display:flex;
@@ -356,82 +363,132 @@
       <img src="Bagong_Pilipinas_Logo.png">
     </div>
 
-<div id="sidebar-title">
-  LAND TRANSPORTATION<br>
-  PUBLIC UTILITY VEHICLE<br>
-  ROUTE MAP
-</div>
-
+    <div id="sidebar-title">
+      LAND TRANSPORTATION<br>
+      PUBLIC UTILITY VEHICLE<br>
+      ROUTE MAP
+    </div>
   </div>
 
+  <!-- ===================== -->
   <!-- BOX 1: LEGEND -->
+  <!-- ===================== -->
   <div class="panel-box">
+
     <div class="legend-title">LEGEND</div>
 
-    <div><span class="legend-line" style="background:#00FFFF;"></span> PUJ OD</div>
-    <div><span class="legend-line" style="background:#0088FF;"></span> PUJ DO</div>
-    <div><span class="legend-line" style="background:#FF00FF;"></span> UVE OD</div>
-    <div><span class="legend-line" style="background:#B000FF;"></span> UVE DO</div>
-    <div><span class="legend-line" style="background:#00FF66;"></span> Mini Bus OD</div>
-    <div><span class="legend-line" style="background:#00AA44;"></span> Mini Bus DO</div>
-    <div><span class="legend-line" style="background:#FFD700;"></span> PUB OD</div>
-    <div><span class="legend-line" style="background:#FF8C00;"></span> PUB DO</div>
-    <div><span class="legend-line" style="background:#FF4444;"></span> P2P OD</div>
-    <div><span class="legend-line" style="background:#800000;"></span> P2P DO</div>
+    <label class="legend-item">
+      <input type="checkbox" id="PUJ_OD" checked>
+      <span class="legend-line" style="background:#00FFFF;"></span>
+      PUJ OD
+    </label>
 
-    <hr>
+    <label class="legend-item">
+      <input type="checkbox" id="PUJ_DO" checked>
+      <span class="legend-line" style="background:#0088FF;"></span>
+      PUJ DO
+    </label>
 
-    <div><span class="legend-stop"></span> Stop</div>
-    <div><span class="legend-endpoint"></span> Endpoint</div>
-    <div><span class="legend-rail"></span> Railway</div>
+    <label class="legend-item">
+      <input type="checkbox" id="UVE_OD" checked>
+      <span class="legend-line" style="background:#FF00FF;"></span>
+      UVE OD
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="UVE_DO" checked>
+      <span class="legend-line" style="background:#B000FF;"></span>
+      UVE DO
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="MINI_OD" checked>
+      <span class="legend-line" style="background:#00FF66;"></span>
+      Mini Bus OD
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="MINI_DO" checked>
+      <span class="legend-line" style="background:#00AA44;"></span>
+      Mini Bus DO
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="PUB_OD" checked>
+      <span class="legend-line" style="background:#FFD700;"></span>
+      PUB OD
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="PUB_DO" checked>
+      <span class="legend-line" style="background:#FF8C00;"></span>
+      PUB DO
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="P2P_OD" checked>
+      <span class="legend-line" style="background:#FF4444;"></span>
+      P2P OD
+    </label>
+
+    <label class="legend-item">
+      <input type="checkbox" id="P2P_DO" checked>
+      <span class="legend-line" style="background:#800000;"></span>
+      P2P DO
+    </label>
+
+  </div> <!-- ✅ END LEGEND BOX -->
+
+
+  <!-- ===================== -->
+  <!-- BOX 2: DISPLAY CONTROLS -->
+  <!-- ===================== -->
+  <div class="panel-box">
+
+    <div class="panel-title">DISPLAY CONTROLS</div>
+
+    <div class="panel-section">PUV Route Elements</div>
+
+    <label>
+      <input type="checkbox" id="od" checked>
+      OD Direction
+    </label>
+
+    <label>
+      <input type="checkbox" id="do" checked>
+      DO Direction
+    </label>
+
+    <label>
+      <input type="checkbox" id="arrows" checked>
+      Direction Arrows
+      <span class="check-icon">&lt;</span>
+    </label>
+
+    <label>
+      <input type="checkbox" id="endpoints" checked>
+      Endpoints
+      <span class="check-icon">◇</span>
+    </label>
+
+    <label>
+      <input type="checkbox" id="stops" checked>
+      Stops
+      <span class="check-icon">o</span>
+    </label>
+
+    <div class="panel-section">Other Transportation</div>
+
+    <label>
+      <input type="checkbox" id="rail" checked>
+      Railways
+      <span class="check-icon">━━━━━</span>
+    </label>
+
   </div>
 
-
-<!-- BOX 2: DISPLAY CONTROLS -->
-<div class="panel-box">
-
-  <div class="panel-title">DISPLAY CONTROLS</div>
-
-  <div class="panel-section">PUV Route Elements</div>
-
-  <label>
-    <input type="checkbox" id="od" checked>
-    OD Direction
-  </label>
-
-  <label>
-    <input type="checkbox" id="do" checked>
-    DO Direction
-  </label>
-
-  <label>
-    <input type="checkbox" id="arrows" checked>
-    Direction Arrows
-    <span class="check-icon">&lt;</span>
-  </label>
-
-  <label>
-    <input type="checkbox" id="endpoints" checked>
-    Endpoints
-    <span class="check-icon">◇</span>
-  </label>
-
-  <label>
-    <input type="checkbox" id="stops" checked>
-    Stops
-    <span class="check-icon">o</span>
-  </label>
-
-  <div class="panel-section">Other Transportation</div>
-
-  <label>
-    <input type="checkbox" id="rail" checked>
-    Railways
-    <span class="check-icon">━━━━━</span>
-  </label>
-
 </div>
-</div>
+
 
 <div id="route-popup-list" style="
   position: absolute;
@@ -892,10 +949,24 @@ setTimeout(() => {
   })
   .catch(err => { console.error(err); alert("Failed to load PUV route data"); });
 
-// CHECKBOX EVENT LISTENERS
+// DISPLAY CONTROLS
 ["od","do","arrows","endpoints","stops","rail"].forEach(id=>{
-    document.getElementById(id).addEventListener("change", toggleLayers);
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("change", toggleLayers);
 });
+
+// LEGEND CONTROLS (ADD THIS)
+[
+  "PUJ_OD","PUJ_DO",
+  "UVE_OD","UVE_DO",
+  "MINI_OD","MINI_DO",
+  "PUB_OD","PUB_DO",
+  "P2P_OD","P2P_DO"
+].forEach(id=>{
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("change", toggleLayers);
+});
+
 
 function toggleLayers() {
 
@@ -906,17 +977,43 @@ function toggleLayers() {
   const showStops = document.getElementById("stops").checked;
   const showRailways = document.getElementById("rail").checked;
 
+// LEGEND FILTERS
+const legend = {
+  PUJ_OD: document.getElementById("PUJ_OD").checked,
+  PUJ_DO: document.getElementById("PUJ_DO").checked,
+  UVE_OD: document.getElementById("UVE_OD").checked,
+  UVE_DO: document.getElementById("UVE_DO").checked,
+  MINI_OD: document.getElementById("MINI_OD").checked,
+  MINI_DO: document.getElementById("MINI_DO").checked,
+  PUB_OD: document.getElementById("PUB_OD").checked,
+  PUB_DO: document.getElementById("PUB_DO").checked,
+  P2P_OD: document.getElementById("P2P_OD").checked,
+  P2P_DO: document.getElementById("P2P_DO").checked
+};
+
+
   const zoom = map.getZoom();
 
   // ===== ROUTES =====
   if (routesLayer) {
     routesLayer.eachLayer(layer => {
 
-      const dir = layer.feature.properties.direction;
+const p = layer.feature.properties;
 
-      const visible =
-        (dir === "OD" && showOD) ||
-        (dir === "DO" && showDO);
+// build key like PUJ_OD, UVE_DO, etc
+const key = `${p.deno}_${p.direction}`;
+
+// direction filter still applies
+const dirVisible =
+  (p.direction === "OD" && showOD) ||
+  (p.direction === "DO" && showDO);
+
+// legend filter applies too
+const legendVisible = legend[key] ?? true;
+
+// FINAL VISIBILITY RULE
+const visible = dirVisible && legendVisible;
+
 
       layer.setStyle({
         opacity: visible ? 1 : 0
