@@ -93,11 +93,20 @@
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
 }
 
+/* ===== UNIFIED PANEL TITLE (LEGEND + DISPLAY) ===== */
+.panel-title,
 .legend-title{
-  font-weight:bold;
-  margin-bottom:6px;
-  border-bottom:1px solid #ccc;
-  padding-bottom:4px;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+
+  border-bottom: 1px solid #ccc;
+  color: #222;
 }
 
 .legend-line{
@@ -189,7 +198,7 @@
 
 /* TEXT ALIGNMENT BASELINE FIX */
 .legend-control{
-  line-height: 14px;
+  line-height: inherit;
 }
 
 /* FORCE PERFECT CENTERING */
@@ -350,6 +359,8 @@
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+
+  font-family: Arial, sans-serif;
 }
 
 .panel-box + .panel-box{
@@ -380,7 +391,7 @@
   display:flex;
   flex-direction:column;
   gap:10px;
-  font-size:13px;
+  font-family: inherit;
 }
 
 /* TITLE */
@@ -478,17 +489,10 @@
   padding: 12px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+
+  font-family: Arial, sans-serif;
 }
 
-/* TITLE INSIDE DISPLAY BOX */
-.panel-title{
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  color: #222;
-}
 
 /* SECTION HEADERS */
 .panel-section{
