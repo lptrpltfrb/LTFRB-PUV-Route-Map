@@ -232,7 +232,7 @@
 .legend-sample.line.od::after{
   content: ">";
   position: absolute;
-  top: 45%;
+  top: 50%;
   right: 0px;
   transform: translateY(-50%);
   font-size: 16px;
@@ -346,7 +346,7 @@
   left:10px;
   z-index:1000;
 
-  width:320px;
+  width:280px;
   background:rgba(255,255,255,0.96);
   border-radius:10px;
   padding:12px;
@@ -380,7 +380,7 @@
 
 #sidebar-title{
   font-family: "Montserrat", Arial, sans-serif;
-  font-size: 20px;              /* 🔥 BIGGER than legend */
+  font-size: 18px;              /* 🔥 BIGGER than legend */
   font-weight: 800;
   text-align: center;
   letter-spacing: 1.8px;
@@ -552,65 +552,171 @@
 
     <div class="legend-title">LEGEND</div>
 
-    <label class="legend-item">
-      <input type="checkbox" id="PUJ_OD" checked>
-      <span class="legend-line" style="background:#00FFFF;"></span>
-      PUJ OD
-    </label>
+<div style="
+display:grid;
+grid-template-columns: 1fr 55px 55px;
+font-size:11px;
+font-weight:bold;
+margin-bottom:6px;
+padding:0 4px;
+">
+  <div></div>
+  <div style="text-align:right;">Routes</div>
+  <div style="text-align:right;">Fleet</div>
+</div>
 
-    <label class="legend-item">
-      <input type="checkbox" id="PUJ_DO" checked>
-      <span class="legend-line" style="background:#0088FF;"></span>
-      PUJ DO
-    </label>
+<!-- PUJ -->
+<div style="
+background:#f3f3f3;
+padding:4px 8px;
+border-radius:4px;
+font-weight:bold;
+display:grid;
+grid-template-columns:1fr 55px 55px;
+margin-bottom:2px;
+">
+  <div>PUJ</div>
+  <div id="stat_PUJ_routes" style="text-align:right;">0</div>
+  <div id="stat_PUJ_units" style="text-align:right;">0</div>
+</div>
 
-    <label class="legend-item">
-      <input type="checkbox" id="UVE_OD" checked>
-      <span class="legend-line" style="background:#FF00FF;"></span>
-      UVE OD
-    </label>
+<label class="legend-item">
+  <input type="checkbox" id="PUJ_OD" checked>
+  <span class="legend-line" style="background:#00FFFF;"></span>
+  OD
+</label>
 
-    <label class="legend-item">
-      <input type="checkbox" id="UVE_DO" checked>
-      <span class="legend-line" style="background:#B000FF;"></span>
-      UVE DO
-    </label>
+<label class="legend-item">
+  <input type="checkbox" id="PUJ_DO" checked>
+  <span class="legend-line" style="background:#0088FF;"></span>
+  DO
+</label>
 
-    <label class="legend-item">
-      <input type="checkbox" id="MINI_OD" checked>
-      <span class="legend-line" style="background:#00FF66;"></span>
-      Mini Bus OD
-    </label>
+<!-- UVE -->
+<div style="
+background:#f3f3f3;
+padding:4px 8px;
+border-radius:4px;
+font-weight:bold;
+display:grid;
+grid-template-columns:1fr 55px 55px;
+margin-top:6px;
+margin-bottom:2px;
+">
+  <div>UVE</div>
+  <div id="stat_UVE_routes" style="text-align:right;">0</div>
+  <div id="stat_UVE_units" style="text-align:right;">0</div>
+</div>
 
-    <label class="legend-item">
-      <input type="checkbox" id="MINI_DO" checked>
-      <span class="legend-line" style="background:#00AA44;"></span>
-      Mini Bus DO
-    </label>
+<label class="legend-item">
+  <input type="checkbox" id="UVE_OD" checked>
+  <span class="legend-line" style="background:#FF00FF;"></span>
+  OD
+</label>
 
-    <label class="legend-item">
-      <input type="checkbox" id="PUB_OD" checked>
-      <span class="legend-line" style="background:#FFD700;"></span>
-      PUB OD
-    </label>
+<label class="legend-item">
+  <input type="checkbox" id="UVE_DO" checked>
+  <span class="legend-line" style="background:#B000FF;"></span>
+  DO
+</label>
 
-    <label class="legend-item">
-      <input type="checkbox" id="PUB_DO" checked>
-      <span class="legend-line" style="background:#FF8C00;"></span>
-      PUB DO
-    </label>
+<!-- MB -->
+<div style="
+background:#f3f3f3;
+padding:4px 8px;
+border-radius:4px;
+font-weight:bold;
+display:grid;
+grid-template-columns:1fr 55px 55px;
+margin-top:6px;
+margin-bottom:2px;
+">
+  <div>MB</div>
+  <div id="stat_MINI_routes" style="text-align:right;">0</div>
+  <div id="stat_MINI_units" style="text-align:right;">0</div>
+</div>
 
-    <label class="legend-item">
-      <input type="checkbox" id="P2P_OD" checked>
-      <span class="legend-line" style="background:#FF4444;"></span>
-      P2P OD
-    </label>
+<label class="legend-item">
+  <input type="checkbox" id="MINI_OD" checked>
+  <span class="legend-line" style="background:#00FF66;"></span>
+  OD
+</label>
 
-    <label class="legend-item">
-      <input type="checkbox" id="P2P_DO" checked>
-      <span class="legend-line" style="background:#800000;"></span>
-      P2P DO
-    </label>
+<label class="legend-item">
+  <input type="checkbox" id="MINI_DO" checked>
+  <span class="legend-line" style="background:#00AA44;"></span>
+  DO
+</label>
+
+<!-- PUB -->
+<div style="
+background:#f3f3f3;
+padding:4px 8px;
+border-radius:4px;
+font-weight:bold;
+display:grid;
+grid-template-columns:1fr 55px 55px;
+margin-top:6px;
+margin-bottom:2px;
+">
+  <div>PUB</div>
+  <div id="stat_PUB_routes" style="text-align:right;">0</div>
+  <div id="stat_PUB_units" style="text-align:right;">0</div>
+</div>
+
+<label class="legend-item">
+  <input type="checkbox" id="PUB_OD" checked>
+  <span class="legend-line" style="background:#FFD700;"></span>
+  OD
+</label>
+
+<label class="legend-item">
+  <input type="checkbox" id="PUB_DO" checked>
+  <span class="legend-line" style="background:#FF8C00;"></span>
+  DO
+</label>
+
+<!-- P2P -->
+<div style="
+background:#f3f3f3;
+padding:4px 8px;
+border-radius:4px;
+font-weight:bold;
+display:grid;
+grid-template-columns:1fr 55px 55px;
+margin-top:6px;
+margin-bottom:2px;
+">
+  <div>P2P</div>
+  <div id="stat_P2P_routes" style="text-align:right;">0</div>
+  <div id="stat_P2P_units" style="text-align:right;">0</div>
+</div>
+
+<label class="legend-item">
+  <input type="checkbox" id="P2P_OD" checked>
+  <span class="legend-line" style="background:#FF4444;"></span>
+  OD
+</label>
+
+<label class="legend-item">
+  <input type="checkbox" id="P2P_DO" checked>
+  <span class="legend-line" style="background:#800000;"></span>
+  DO
+</label>
+
+<hr>
+
+<div style="
+display:grid;
+grid-template-columns:1fr 55px 55px;
+font-weight:bold;
+padding:0 4px;
+">
+  <div>TOTAL</div>
+  <div id="stat_TOTAL_routes" style="text-align:right;">0</div>
+  <div id="stat_TOTAL_units" style="text-align:right;">0</div>
+</div>
+
 
   </div> <!-- ✅ END LEGEND BOX -->
 
@@ -799,6 +905,9 @@ const getSleeperSize = (z) => {
 const routeColorLookup = {};
 let hoverTooltip = null;
 
+// ===== ROUTE STATISTICS =====
+const routeStats = {};
+
 let clickedLayers = [];        // all routes found at clicked point
 let selectedRouteLayers = [];  // route selected from list
 
@@ -928,6 +1037,35 @@ function distanceToPolyline(latlng, layer){
   .then(res => res.json())
   .then(data => {
     const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
+
+// ===== BUILD ROUTE STATISTICS =====
+const countedRoutes = new Set();
+
+validFeatures.forEach(feature => {
+
+  const p = feature.properties;
+
+  const key =
+    p.deno + "|" + p.route_name;
+
+  if(countedRoutes.has(key)) return;
+
+  countedRoutes.add(key);
+
+  if(!routeStats[p.deno]){
+    routeStats[p.deno] = {
+      routes:0,
+      units:0
+    };
+  }
+
+  routeStats[p.deno].routes += 1;
+
+  routeStats[p.deno].units +=
+    Number(p.authorized_units || 0);
+
+});
+
 validFeatures.forEach(feature => {
 
   const routeName = feature.properties.route_name;
@@ -1119,7 +1257,11 @@ layer._decorator = decorator;
     }).addTo(map);
 
 setTimeout(() => {
+
+  updateStatsTable();
+
   map.fire('zoomend');
+
 }, 300);
 
 
@@ -1143,6 +1285,68 @@ setTimeout(() => {
   const el = document.getElementById(id);
   if (el) el.addEventListener("change", toggleLayers);
 });
+
+function updateStatsTable(){
+
+  const include = {
+    PUJ:
+      document.getElementById("PUJ_OD").checked ||
+      document.getElementById("PUJ_DO").checked,
+
+    UVE:
+      document.getElementById("UVE_OD").checked ||
+      document.getElementById("UVE_DO").checked,
+
+    MINI:
+      document.getElementById("MINI_OD").checked ||
+      document.getElementById("MINI_DO").checked,
+
+    PUB:
+      document.getElementById("PUB_OD").checked ||
+      document.getElementById("PUB_DO").checked,
+
+    P2P:
+      document.getElementById("P2P_OD").checked ||
+      document.getElementById("P2P_DO").checked
+  };
+
+  let totalRoutes = 0;
+  let totalUnits = 0;
+
+  Object.keys(include).forEach(deno => {
+
+    let routes = 0;
+    let units = 0;
+
+    if(include[deno]){
+
+      routes =
+        routeStats[deno]?.routes || 0;
+
+      units =
+        routeStats[deno]?.units || 0;
+
+      totalRoutes += routes;
+      totalUnits += units;
+    }
+
+    document.getElementById(
+      `stat_${deno}_routes`
+    ).textContent = routes;
+
+    document.getElementById(
+      `stat_${deno}_units`
+    ).textContent = units;
+  });
+
+  document.getElementById(
+    "stat_TOTAL_routes"
+  ).textContent = totalRoutes;
+
+  document.getElementById(
+    "stat_TOTAL_units"
+  ).textContent = totalUnits;
+}
 
 
 function toggleLayers() {
@@ -1170,6 +1374,7 @@ const legend = {
 
 
   const zoom = map.getZoom();
+  updateStatsTable();
 
   // ===== ROUTES =====
   if (routesLayer) {
@@ -1210,7 +1415,7 @@ const visible = dirVisible && legendVisible;
   // ===== STOPS (FIXED) =====
 stopsLayer.eachLayer(l => {
 
-  const key = `PUJ_${l._direction}`;
+  const key = `${l._deno}_${l._direction}`;
 
   const legendVisible = legend[key] ?? true;
 
@@ -1232,7 +1437,7 @@ stopsLayer.eachLayer(l => {
   // ===== ENDPOINTS (FIXED) =====
 endpointsLayer.eachLayer(l => {
 
-  const key = `PUJ_${l._direction}`;
+  const key = `${l._deno}_${l._direction}`;
 
   const legendVisible = legend[key] ?? true;
 
@@ -1429,7 +1634,7 @@ obj.sleeper.setZIndexOffset?.(1000);
 });
 
   // ==== PUV STOPS + ENDPOINTS ====
-  fetch('https://script.google.com/macros/s/AKfycbwJuejtkX49SKerkEZsPktCC_63zn_bjZkyfiUfuht1r1_X_jqcHgtkACofaF1W7764pw/exec')
+  fetch('https://script.google.com/macros/s/AKfycbwnZSRDANhjJnJUGfCVCUrWBQHOdcTfApaSoTRmPLauW0vaajJFpzMuTpr1__Frq4Jp/exec')
   .then(res=>res.json())
   .then(data=>{
     data.features.forEach(feature=>{
@@ -1474,9 +1679,20 @@ if(type==="Stops") {
     fillOpacity:1,
     weight:2
   });
-  marker._direction = dir;
-  marker.bindPopup(feature.properties.stop || feature.properties.STOP || "Stop");
-  stopsLayer.addLayer(marker);
+
+console.log("STOP:", feature.properties);
+
+marker._direction = dir;
+marker._deno = feature.properties.deno;
+
+marker.bindPopup(
+  feature.properties.stop ||
+  feature.properties.STOP ||
+  "Stop"
+);
+
+stopsLayer.addLayer(marker);
+
 }
 
 if(type==="Endpoint") {
@@ -1500,9 +1716,17 @@ if(type==="Endpoint") {
       "></div>`
     })
   });
-  marker._direction = dir;
-  marker.bindPopup(feature.properties.endpoint || feature.properties.ENDPOINT || "Endpoint");
-  endpointsLayer.addLayer(marker);
+marker._direction = dir;
+marker._deno = feature.properties.deno;
+
+marker.bindPopup(
+  feature.properties.endpoint ||
+  feature.properties.ENDPOINT ||
+  "Endpoint"
+);
+
+endpointsLayer.addLayer(marker);
+
 }
 
     });
