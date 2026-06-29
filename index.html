@@ -369,7 +369,7 @@
 }
 
 .panel-box + .panel-box{
-  margin-top: 10px;
+  margin-top: 2px;
 }
 
 
@@ -580,17 +580,27 @@ margin-bottom:2px;
   <div id="stat_PUJ_units" style="text-align:right;">0</div>
 </div>
 
-<label class="legend-item">
+<div style="
+display:flex;
+gap:16px;
+padding-left:8px;
+margin-bottom:2px;
+">
+
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="PUJ_OD" checked>
   <span class="legend-line" style="background:#00FFFF;"></span>
   OD
 </label>
 
-<label class="legend-item">
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="PUJ_DO" checked>
   <span class="legend-line" style="background:#0088FF;"></span>
   DO
 </label>
+
+</div>
+
 
 <!-- UVE -->
 <div style="
@@ -608,17 +618,26 @@ margin-bottom:2px;
   <div id="stat_UVE_units" style="text-align:right;">0</div>
 </div>
 
-<label class="legend-item">
+<div style="
+display:flex;
+gap:16px;
+padding-left:8px;
+margin-bottom:2px;
+">
+
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="UVE_OD" checked>
   <span class="legend-line" style="background:#FF00FF;"></span>
   OD
 </label>
 
-<label class="legend-item">
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="UVE_DO" checked>
   <span class="legend-line" style="background:#B000FF;"></span>
   DO
 </label>
+
+</div>
 
 <!-- MB -->
 <div style="
@@ -636,17 +655,26 @@ margin-bottom:2px;
   <div id="stat_MINI_units" style="text-align:right;">0</div>
 </div>
 
-<label class="legend-item">
+<div style="
+display:flex;
+gap:16px;
+padding-left:8px;
+margin-bottom:2px;
+">
+
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="MINI_OD" checked>
   <span class="legend-line" style="background:#00FF66;"></span>
   OD
 </label>
 
-<label class="legend-item">
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="MINI_DO" checked>
   <span class="legend-line" style="background:#00AA44;"></span>
   DO
 </label>
+
+</div>
 
 <!-- PUB -->
 <div style="
@@ -664,17 +692,26 @@ margin-bottom:2px;
   <div id="stat_PUB_units" style="text-align:right;">0</div>
 </div>
 
-<label class="legend-item">
+<div style="
+display:flex;
+gap:16px;
+padding-left:8px;
+margin-bottom:2px;
+">
+
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="PUB_OD" checked>
   <span class="legend-line" style="background:#FFD700;"></span>
   OD
 </label>
 
-<label class="legend-item">
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="PUB_DO" checked>
   <span class="legend-line" style="background:#FF8C00;"></span>
   DO
 </label>
+
+</div>
 
 <!-- P2P -->
 <div style="
@@ -692,17 +729,26 @@ margin-bottom:2px;
   <div id="stat_P2P_units" style="text-align:right;">0</div>
 </div>
 
-<label class="legend-item">
+<div style="
+display:flex;
+gap:16px;
+padding-left:8px;
+margin-bottom:2px;
+">
+
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="P2P_OD" checked>
   <span class="legend-line" style="background:#FF4444;"></span>
   OD
 </label>
 
-<label class="legend-item">
+<label class="legend-item" style="margin:0;">
   <input type="checkbox" id="P2P_DO" checked>
   <span class="legend-line" style="background:#800000;"></span>
   DO
 </label>
+
+</div>
 
 <hr>
 
@@ -716,10 +762,7 @@ padding:0 4px;
   <div id="stat_TOTAL_routes" style="text-align:right;">0</div>
   <div id="stat_TOTAL_units" style="text-align:right;">0</div>
 </div>
-
-
-  </div> <!-- ✅ END LEGEND BOX -->
-
+</div> <!-- END LEGEND BOX -->
 
   <!-- ===================== -->
   <!-- BOX 2: DISPLAY CONTROLS -->
@@ -770,8 +813,138 @@ padding:0 4px;
 
 </div>
 
+
+  <button id="openRegionPanel"
+
+  style="
+    width:100%;
+    padding:8px;
+    cursor:pointer;
+  ">
+    FILTERS
+  </button>
+
+
 </div>
 
+<div id="regionPanel" style="
+position:absolute;
+top:15px;
+left:320px;
+width:280px;
+max-height:80vh;
+overflow:auto;
+
+background:white;
+border-radius:10px;
+padding:10px;
+
+box-shadow:0 2px 10px rgba(0,0,0,.3);
+
+display:none;
+z-index:2000;
+">
+
+<div class="panel-box">
+
+<div style="
+font-weight:bold;
+font-size:16px;
+margin-bottom:8px;
+">
+Summary by Office
+</div>
+
+<table
+id="regionTable"
+style="
+width:100%;
+font-size:12px;
+border-collapse:collapse;
+">
+
+
+<tr>
+<th></th>
+<th align="left">Region</th>
+<th align="right">Routes</th>
+<th align="right">Fleet</th>
+</tr>
+
+<tr id="regionTotalRow" style="
+font-weight:bold;
+border-top:1px solid #999;
+">
+<td></td>
+<td>TOTAL</td>
+<td align="right" id="regionTotalRoutes">0</td>
+<td align="right" id="regionTotalFleet">0</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="panel-box">
+
+<div style="
+font-weight:bold;
+font-size:16px;
+margin-bottom:8px;
+">
+Summary by Route Classification
+
+<div
+id="routeClassWarning"
+style="
+display:none;
+margin-bottom:8px;
+padding:6px;
+background:#fff3cd;
+border:1px solid #ffe69c;
+border-radius:6px;
+color:#664d03;
+font-size:12px;
+font-weight:bold;
+">
+⚠ *Some routes have blank Route Classification values in data source.
+</div>
+
+</div>
+
+<table
+id="routeClassTable"
+style="
+width:100%;
+font-size:12px;
+border-collapse:collapse;
+"
+>
+
+<tr>
+<th></th>
+<th align="left">Classification</th>
+<th align="right">Routes</th>
+<th align="right">Fleet</th>
+</tr>
+
+
+<tr style="
+font-weight:bold;
+border-top:1px solid #999;
+">
+<td></td>
+<td>TOTAL</td>
+<td id="classTotalRoutes" align="right">0</td>
+<td id="classTotalFleet" align="right">0</td>
+</tr>
+
+</table>
+
+</div>
+
+
+</div>
 
 <div id="route-popup-list" style="
   position: absolute;
@@ -821,6 +994,7 @@ padding:0 4px;
 </div>
 
 <script>
+
   // ==== MAP INIT ====
 const map = L.map('map', {
   zoomControl:false
@@ -904,9 +1078,12 @@ const getSleeperSize = (z) => {
 
 const routeColorLookup = {};
 let hoverTooltip = null;
+const regionStats = {};
 
 // ===== ROUTE STATISTICS =====
 const routeStats = {};
+let allRouteFeatures = [];
+const routeClassStats = {};
 
 let clickedLayers = [];        // all routes found at clicked point
 let selectedRouteLayers = [];  // route selected from list
@@ -1038,6 +1215,72 @@ function distanceToPolyline(latlng, layer){
   .then(data => {
     const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
 
+allRouteFeatures = validFeatures;
+
+const countedRegionRoutes = new Set();
+
+const countedClassRoutes = new Set();
+let blankRouteClassCount = 0;
+
+validFeatures.forEach(feature => {
+
+  const p = feature.properties;
+
+const className =
+  (p.route_study || "").trim() ||
+  "Unclassified*";
+
+  const key =
+    className + "|" +
+    p.route_name;
+
+  if(countedClassRoutes.has(key))
+    return;
+
+  countedClassRoutes.add(key);
+
+  if(!routeClassStats[className]){
+    routeClassStats[className] = {
+      routes:0,
+      units:0
+    };
+  }
+
+  routeClassStats[className].routes++;
+
+  routeClassStats[className].units +=
+    Number(p.authorized_units || 0);
+
+});
+
+
+validFeatures.forEach(feature => {
+
+  const p = feature.properties;
+
+  const key =
+    p.region + "|" +
+    p.route_name;
+
+if(countedRegionRoutes.has(key)) return;
+
+countedRegionRoutes.add(key);
+
+  if(!regionStats[p.region]){
+    regionStats[p.region] = {
+      routes:0,
+      units:0
+    };
+  }
+
+  regionStats[p.region].routes++;
+
+  regionStats[p.region].units +=
+    Number(p.authorized_units || 0);
+
+});
+
+
 // ===== BUILD ROUTE STATISTICS =====
 const countedRoutes = new Set();
 
@@ -1083,6 +1326,25 @@ validFeatures.forEach(feature => {
 
 });
 
+buildRegionTable();
+buildRouteClassTable();
+
+blankRouteClassCount =
+  routeClassStats["Unclassified*"]?.routes || 0;
+
+if(blankRouteClassCount > 0){
+
+  const warn =
+    document.getElementById(
+      "routeClassWarning"
+    );
+
+  warn.style.display = "block";
+
+  warn.innerHTML =
+    "⚠ *Some route(s) have blank Route Classification values.";
+}
+
     routesLayer = L.geoJSON(validFeatures, {
 style: feature => ({
   color: getRouteColor(
@@ -1091,8 +1353,6 @@ style: feature => ({
   ),
   weight: 3
 }),
-
-
 
       onEachFeature: (feature, layer) => {
         // Assign OD/DO pane
@@ -1286,7 +1546,157 @@ setTimeout(() => {
   if (el) el.addEventListener("change", toggleLayers);
 });
 
+// LTFRB OFFICE + ROUTE CLASS FILTERS
+document.addEventListener("change", function(e){
+
+  if(
+    e.target.classList &&
+    (
+      e.target.classList.contains("regionFilter") ||
+      e.target.classList.contains("routeClassFilter")
+    )
+  ){
+    toggleLayers();
+  }
+
+});
+
+
 function updateStatsTable(){
+
+  const checkedRegions = new Set();
+
+  const officeStats = {};
+  const classStats = {};
+  const countedClass = new Set();
+  const checkedClasses = new Set();
+
+document
+  .querySelectorAll(".routeClassFilter:checked")
+  .forEach(cb=>{
+    checkedClasses.add(
+      cb.dataset.class
+    );
+  });
+
+
+  document
+    .querySelectorAll(".regionFilter:checked")
+    .forEach(cb=>{
+      checkedRegions.add(
+        cb.dataset.region
+      );
+    });
+
+  const stats = {
+    PUJ:{routes:0,units:0},
+    UVE:{routes:0,units:0},
+    MINI:{routes:0,units:0},
+    PUB:{routes:0,units:0},
+    P2P:{routes:0,units:0}
+  };
+
+  const counted = new Set();
+
+  allRouteFeatures.forEach(feature=>{
+
+    const p = feature.properties;
+
+if(!checkedRegions.has(p.region))
+  return;
+
+const legendKey =
+  `${p.deno}_${p.direction}`;
+
+const legend = {
+  PUJ_OD: document.getElementById("PUJ_OD").checked,
+  PUJ_DO: document.getElementById("PUJ_DO").checked,
+
+  UVE_OD: document.getElementById("UVE_OD").checked,
+  UVE_DO: document.getElementById("UVE_DO").checked,
+
+  MINI_OD: document.getElementById("MINI_OD").checked,
+  MINI_DO: document.getElementById("MINI_DO").checked,
+
+  PUB_OD: document.getElementById("PUB_OD").checked,
+  PUB_DO: document.getElementById("PUB_DO").checked,
+
+  P2P_OD: document.getElementById("P2P_OD").checked,
+  P2P_DO: document.getElementById("P2P_DO").checked
+};
+
+if(!legend[legendKey])
+  return;
+
+const routeClass =
+  (p.route_study || "").trim() ||
+  "Unclassified*";
+
+if(!checkedClasses.has(routeClass))
+  return;
+
+if(!classStats[routeClass]){
+  classStats[routeClass] = {
+    routes:0,
+    units:0
+  };
+}
+
+if(!officeStats[p.region]){
+  officeStats[p.region] = {
+    routes:0,
+    units:0
+  };
+}
+
+    const denoKey =
+      p.deno === "Mini bus"
+      ? "MINI"
+      : p.deno;
+
+const classKey =
+  p.region + "|" +
+  routeClass + "|" +
+  p.route_name;
+
+if(!countedClass.has(classKey)){
+
+  countedClass.add(classKey);
+
+  classStats[routeClass].routes++;
+
+  classStats[routeClass].units +=
+    Number(p.authorized_units || 0);
+
+}
+
+const key =
+  p.region + "|" +
+  denoKey + "|" +
+  p.route_name;
+
+if(counted.has(key)) return;
+
+counted.add(key);
+
+// ===== UPDATE LEGEND STATS =====
+if(stats[denoKey]){
+
+  stats[denoKey].routes++;
+
+  stats[denoKey].units +=
+    Number(p.authorized_units || 0);
+
+}
+
+// ===== UPDATE OFFICE STATS =====
+officeStats[p.region].routes++;
+
+officeStats[p.region].units +=
+  Number(p.authorized_units || 0);
+
+
+  });
 
   const include = {
     PUJ:
@@ -1313,7 +1723,7 @@ function updateStatsTable(){
   let totalRoutes = 0;
   let totalUnits = 0;
 
-  Object.keys(include).forEach(deno => {
+  Object.keys(include).forEach(deno=>{
 
     let routes = 0;
     let units = 0;
@@ -1321,10 +1731,10 @@ function updateStatsTable(){
     if(include[deno]){
 
       routes =
-        routeStats[deno]?.routes || 0;
+        stats[deno]?.routes || 0;
 
       units =
-        routeStats[deno]?.units || 0;
+        stats[deno]?.units || 0;
 
       totalRoutes += routes;
       totalUnits += units;
@@ -1337,15 +1747,135 @@ function updateStatsTable(){
     document.getElementById(
       `stat_${deno}_units`
     ).textContent = units;
+
   });
 
   document.getElementById(
     "stat_TOTAL_routes"
   ).textContent = totalRoutes;
 
-  document.getElementById(
-    "stat_TOTAL_units"
-  ).textContent = totalUnits;
+document.getElementById(
+  "stat_TOTAL_units"
+).textContent = totalUnits;
+
+// ===== UPDATE OFFICE TABLE =====
+
+let officeTotalRoutes = 0;
+let officeTotalUnits = 0;
+
+Object.keys(regionStats).forEach(region=>{
+
+  const routes =
+    officeStats[region]?.routes || 0;
+
+  const units =
+    officeStats[region]?.units || 0;
+
+  officeTotalRoutes += routes;
+  officeTotalUnits += units;
+
+  const routesCell =
+    document.getElementById(
+      `office_routes_${region}`
+    );
+
+  const unitsCell =
+    document.getElementById(
+      `office_units_${region}`
+    );
+
+  if(routesCell)
+    routesCell.textContent = routes;
+
+  if(unitsCell)
+    unitsCell.textContent = units;
+
+});
+
+// ===== UPDATE ROUTE CLASSIFICATION TABLE =====
+
+let classTotalRoutes = 0;
+let classTotalUnits = 0;
+
+// Reset every displayed row to zero first
+document
+  .querySelectorAll(".routeClassFilter")
+  .forEach(cb => {
+
+    const safeClass =
+      cb.dataset.class.replace(/[^a-zA-Z0-9]/g,"_");
+
+    const routesCell =
+      document.getElementById(`${safeClass}_routes`);
+
+    const unitsCell =
+      document.getElementById(`${safeClass}_units`);
+
+    if(routesCell)
+      routesCell.textContent = 0;
+
+    if(unitsCell)
+      unitsCell.textContent = 0;
+
+});
+
+Object.keys(classStats).forEach(className => {
+
+  const safeClass =
+    className.replace(/[^a-zA-Z0-9]/g,"_");
+
+  const routes =
+    classStats[className].routes;
+
+  const units =
+    classStats[className].units;
+
+  classTotalRoutes += routes;
+  classTotalUnits += units;
+
+  const routesCell =
+    document.getElementById(
+      `${safeClass}_routes`
+    );
+
+  const unitsCell =
+    document.getElementById(
+      `${safeClass}_units`
+    );
+
+  console.log(
+    className,
+    safeClass,
+    routesCell,
+    unitsCell
+  );
+
+  if(routesCell)
+    routesCell.textContent = routes;
+
+  if(unitsCell)
+    unitsCell.textContent = units;
+
+});
+
+document.getElementById(
+  "classTotalRoutes"
+).textContent = classTotalRoutes;
+
+document.getElementById(
+  "classTotalFleet"
+).textContent = classTotalUnits;
+
+
+
+document.getElementById(
+  "regionTotalRoutes"
+).textContent = officeTotalRoutes;
+
+document.getElementById(
+  "regionTotalFleet"
+).textContent = officeTotalUnits;
+
 }
 
 
@@ -1372,6 +1902,26 @@ const legend = {
   P2P_DO: document.getElementById("P2P_DO").checked
 };
 
+// REGION FILTERS
+const selectedRegions = new Set();
+
+document
+  .querySelectorAll(".regionFilter:checked")
+  .forEach(cb => {
+    selectedRegions.add(
+      cb.dataset.region
+    );
+  });
+
+const selectedClasses = new Set();
+
+document
+  .querySelectorAll(".routeClassFilter:checked")
+  .forEach(cb => {
+    selectedClasses.add(
+      cb.dataset.class
+    );
+  });
 
   const zoom = map.getZoom();
   updateStatsTable();
@@ -1382,8 +1932,10 @@ const legend = {
 
 const p = layer.feature.properties;
 
+
 // build key like PUJ_OD, UVE_DO, etc
-const key = `${p.deno}_${p.direction}`;
+const legendKey =
+  `${p.deno}_${p.direction}`;
 
 // direction filter still applies
 const dirVisible =
@@ -1391,11 +1943,27 @@ const dirVisible =
   (p.direction === "DO" && showDO);
 
 // legend filter applies too
-const legendVisible = legend[key] ?? true;
+const legendVisible = legend[legendKey] ?? true;
+
 
 // FINAL VISIBILITY RULE
-const visible = dirVisible && legendVisible;
+const regionVisible =
+  selectedRegions.has(
+    p.region
+  );
 
+const routeClass =
+  (p.route_study || "").trim() ||
+  "Unclassified*";
+
+const classVisible =
+  selectedClasses.has(routeClass);
+
+const visible =
+  dirVisible &&
+  legendVisible &&
+  regionVisible &&
+  classVisible;
 
       layer.setStyle({
         opacity: visible ? 1 : 0
@@ -1412,19 +1980,25 @@ const visible = dirVisible && legendVisible;
     });
   }
 
-  // ===== STOPS (FIXED) =====
+// ===== STOPS =====
 stopsLayer.eachLayer(l => {
 
   const key = `${l._deno}_${l._direction}`;
 
   const legendVisible = legend[key] ?? true;
 
+  const regionVisible =
+    document.querySelector(
+      `.regionFilter[data-region="${l._region}"]`
+    )?.checked ?? true;
+
   const visible =
     ((l._direction === "OD" && showOD) ||
      (l._direction === "DO" && showDO)) &&
     showStops &&
     zoom >= 14 &&
-    legendVisible;
+    legendVisible &&
+    regionVisible;
 
   if (visible) {
     map.addLayer(l);
@@ -1434,19 +2008,26 @@ stopsLayer.eachLayer(l => {
 });
 
 
-  // ===== ENDPOINTS (FIXED) =====
+// ===== ENDPOINTS =====
 endpointsLayer.eachLayer(l => {
 
   const key = `${l._deno}_${l._direction}`;
 
   const legendVisible = legend[key] ?? true;
 
+  const regionVisible =
+    document.querySelector(
+      `.regionFilter[data-region="${l._region}"]`
+    )?.checked ?? true;
+
   const visible =
     ((l._direction === "OD" && showOD) ||
      (l._direction === "DO" && showDO)) &&
     showEndpoints &&
     zoom >= 14 &&
-    legendVisible;
+    legendVisible &&
+    regionVisible;
+
 
   if (visible) {
     map.addLayer(l);
@@ -1684,6 +2265,7 @@ console.log("STOP:", feature.properties);
 
 marker._direction = dir;
 marker._deno = feature.properties.deno;
+marker._region = feature.properties.region;
 
 marker.bindPopup(
   feature.properties.stop ||
@@ -1718,6 +2300,7 @@ if(type==="Endpoint") {
   });
 marker._direction = dir;
 marker._deno = feature.properties.deno;
+marker._region = feature.properties.region;
 
 marker.bindPopup(
   feature.properties.endpoint ||
@@ -1803,6 +2386,203 @@ document.getElementById('detail-content').innerHTML = html;
   });
 
 });
+
+function buildRegionTable(){
+
+const regions = [
+  "CO",
+  "NCR",
+  "CAR",
+  "R1",
+  "R2",
+  "R3",
+  "R4A",
+  "R4B",
+  "R5",
+  "R6",
+  "R7",
+  "R8",
+  "R9",
+  "R10",
+  "R11",
+  "R12",
+  "CARAGA"
+];
+
+const table =
+document.getElementById("regionTable");
+
+regions.forEach(region=>{
+
+  const s =
+    regionStats[region] ||
+    {routes:0,units:0};
+
+  table.insertAdjacentHTML(
+    "beforeend",
+`
+<tr>
+
+<td>
+<input
+type="checkbox"
+class="regionFilter"
+data-region="${region}"
+checked>
+</td>
+
+<td>${region}</td>
+
+<td
+align="right"
+id="office_routes_${region}">
+${s.routes}
+</td>
+
+<td
+align="right"
+id="office_units_${region}">
+${s.units}
+</td>
+
+
+</tr>
+`
+);
+
+});
+
+const totalRoutes =
+Object.values(regionStats)
+.reduce((a,b)=>a+b.routes,0);
+
+const totalUnits =
+Object.values(regionStats)
+.reduce((a,b)=>a+b.units,0);
+
+document.getElementById(
+"regionTotalRoutes"
+).textContent = totalRoutes;
+
+document.getElementById(
+"regionTotalFleet"
+).textContent = totalUnits;
+
+const totalRow =
+document.getElementById(
+"regionTotalRow"
+);
+
+table.appendChild(totalRow);
+
+}
+
+function buildRouteClassTable(){
+
+const table =
+document.getElementById("routeClassTable");
+
+// remove old dynamic rows
+table
+.querySelectorAll("tr.dynamicClassRow")
+.forEach(r => r.remove());
+
+// total row
+const totalRow =
+document.getElementById("classTotalRoutes")
+.parentElement.parentElement;
+
+// build one row for every classification
+[
+  "MUCEP",
+  "LPTRP",
+  "IRIP",
+  ...(routeClassStats["Unclassified*"]
+      ? ["Unclassified*"]
+      : [])
+]
+.forEach(className=>{
+
+
+  const safeClass =
+    className.replace(/[^a-zA-Z0-9]/g,"_");
+if(!routeClassStats[className]){
+  routeClassStats[className] = {
+    routes:0,
+    units:0
+  };
+}
+
+
+  const row =
+    document.createElement("tr");
+
+  row.className = "dynamicClassRow";
+
+  if(className==="Unclassified*"){
+    row.style.color="red";
+    row.style.fontWeight="bold";
+  }
+
+  row.innerHTML = `
+<td>
+<input
+type="checkbox"
+class="routeClassFilter"
+data-class="${className}"
+checked>
+</td>
+
+<td>${className}</td>
+
+<td
+id="${safeClass}_routes"
+align="right">
+0
+</td>
+
+<td
+id="${safeClass}_units"
+align="right">
+0
+</td>
+`;
+
+  table.insertBefore(
+    row,
+    totalRow
+  );
+
+});
+
+}
+
+
+document.addEventListener(
+"click",
+function(){
+
+const btn =
+document.getElementById(
+"openRegionPanel"
+);
+
+const panel =
+document.getElementById(
+"regionPanel"
+);
+
+btn.onclick = function(){
+
+panel.style.display =
+panel.style.display === "block"
+? "none"
+: "block";
+
+};
+
+});
+
 
 </script>
 </body>
