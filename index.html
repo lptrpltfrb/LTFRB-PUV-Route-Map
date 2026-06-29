@@ -918,8 +918,7 @@ style="
 width:100%;
 font-size:12px;
 border-collapse:collapse;
-"
->
+">
 
 <tr>
 <th></th>
@@ -928,6 +927,8 @@ border-collapse:collapse;
 <th align="right">Fleet</th>
 </tr>
 
+<tbody id="routeClassBody">
+</tbody>
 
 <tr style="
 font-weight:bold;
@@ -937,6 +938,71 @@ border-top:1px solid #999;
 <td>TOTAL</td>
 <td id="classTotalRoutes" align="right">0</td>
 <td id="classTotalFleet" align="right">0</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="panel-box">
+
+<div style="
+font-weight:bold;
+font-size:16px;
+margin-bottom:8px;
+">
+Summary by RouteRat Status
+</div>
+
+<table
+id="routeRatTable"
+style="
+width:100%;
+font-size:12px;
+border-collapse:collapse;
+">
+
+<tr>
+<th></th>
+<th align="left">Status</th>
+<th align="right">Routes</th>
+<th align="right">Fleet</th>
+</tr>
+
+<tr>
+<td>
+<input
+type="checkbox"
+class="routeRatFilter"
+data-status="Approved"
+checked>
+</td>
+<td>Approved</td>
+<td id="Approved_routes" align="right">0</td>
+<td id="Approved_units" align="right">0</td>
+</tr>
+
+<tr>
+<td>
+<input
+type="checkbox"
+class="routeRatFilter"
+data-status="For RouteRat"
+checked>
+</td>
+<td>For RouteRat</td>
+<td id="For_RouteRat_routes" align="right">0</td>
+<td id="For_RouteRat_units" align="right">0</td>
+</tr>
+
+<tr style="
+font-weight:bold;
+border-top:1px solid #999;
+">
+<td></td>
+<td>TOTAL</td>
+<td id="routeRatTotalRoutes" align="right">0</td>
+<td id="routeRatTotalFleet" align="right">0</td>
 </tr>
 
 </table>
@@ -1084,6 +1150,8 @@ const regionStats = {};
 const routeStats = {};
 let allRouteFeatures = [];
 const routeClassStats = {};
+const routeRatStats = {};
+
 
 let clickedLayers = [];        // all routes found at clicked point
 let selectedRouteLayers = [];  // route selected from list
@@ -1210,7 +1278,7 @@ function distanceToPolyline(latlng, layer){
   const endpointsLayer = L.layerGroup();
 
   // ==== FETCH PUV ROUTES ====
-  fetch('https://script.google.com/macros/s/AKfycbxolZFkDl6WzZXooeJ_KReQHFHHbLN6_hMhsag9PCZep-ZERkHbudSkczOOCAg4Kvkegw/exec')
+  fetch('https://script.google.com/macros/s/AKfycbyx3fusPm2L8IUYV7OdUofUCpep5FQMbhk3h450aN3L9Rqn56d3fozQXNI1W0hEPPHgAg/exec')
   .then(res => res.json())
   .then(data => {
     const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
@@ -1249,6 +1317,56 @@ const className =
   routeClassStats[className].routes++;
 
   routeClassStats[className].units +=
+    Number(p.authorized_units || 0);
+
+});
+
+// ===== BUILD ROUTERAT STATUS STATISTICS =====
+
+const countedStatusRoutes = new Set();
+
+validFeatures.forEach(feature => {
+
+  const p = feature.properties;
+
+  const status =
+    (p.status || "").trim();
+
+  // Ignore Superseded completely
+  if(status === "Superseded")
+    return;
+
+  let statusGroup;
+
+  if(
+    status === "Approved" ||
+    status === "Suspended"
+  ){
+    statusGroup = "Approved";
+  }else{
+    // Includes "For RouteRat" and blank
+    statusGroup = "For RouteRat";
+  }
+
+  const key =
+    statusGroup + "|" +
+    p.route_name;
+
+  if(countedStatusRoutes.has(key))
+    return;
+
+  countedStatusRoutes.add(key);
+
+  if(!routeRatStats[statusGroup]){
+    routeRatStats[statusGroup] = {
+      routes:0,
+      units:0
+    };
+  }
+
+  routeRatStats[statusGroup].routes++;
+
+  routeRatStats[statusGroup].units +=
     Number(p.authorized_units || 0);
 
 });
@@ -1546,14 +1664,15 @@ setTimeout(() => {
   if (el) el.addEventListener("change", toggleLayers);
 });
 
-// LTFRB OFFICE + ROUTE CLASS FILTERS
+// LTFRB OFFICE + ROUTE CLASS + ROUTERAT FILTERS
 document.addEventListener("change", function(e){
 
   if(
     e.target.classList &&
     (
       e.target.classList.contains("regionFilter") ||
-      e.target.classList.contains("routeClassFilter")
+      e.target.classList.contains("routeClassFilter") ||
+      e.target.classList.contains("routeRatFilter")
     )
   ){
     toggleLayers();
@@ -1566,16 +1685,31 @@ function updateStatsTable(){
 
   const checkedRegions = new Set();
 
-  const officeStats = {};
-  const classStats = {};
-  const countedClass = new Set();
-  const checkedClasses = new Set();
+const officeStats = {};
+const classStats = {};
+const routeRatStats = {};
+
+const countedClass = new Set();
+const countedRouteRat = new Set();
+
+const checkedClasses = new Set();
+
 
 document
   .querySelectorAll(".routeClassFilter:checked")
   .forEach(cb=>{
     checkedClasses.add(
       cb.dataset.class
+    );
+  });
+
+const checkedRouteRat = new Set();
+
+document
+  .querySelectorAll(".routeRatFilter:checked")
+  .forEach(cb=>{
+    checkedRouteRat.add(
+      cb.dataset.status
     );
   });
 
@@ -1605,32 +1739,58 @@ document
 if(!checkedRegions.has(p.region))
   return;
 
-const legendKey =
-  `${p.deno}_${p.direction}`;
-
 const legend = {
-  PUJ_OD: document.getElementById("PUJ_OD").checked,
-  PUJ_DO: document.getElementById("PUJ_DO").checked,
+  PUJ:
+    document.getElementById("PUJ_OD").checked ||
+    document.getElementById("PUJ_DO").checked,
 
-  UVE_OD: document.getElementById("UVE_OD").checked,
-  UVE_DO: document.getElementById("UVE_DO").checked,
+  UVE:
+    document.getElementById("UVE_OD").checked ||
+    document.getElementById("UVE_DO").checked,
 
-  MINI_OD: document.getElementById("MINI_OD").checked,
-  MINI_DO: document.getElementById("MINI_DO").checked,
+  MINI:
+    document.getElementById("MINI_OD").checked ||
+    document.getElementById("MINI_DO").checked,
 
-  PUB_OD: document.getElementById("PUB_OD").checked,
-  PUB_DO: document.getElementById("PUB_DO").checked,
+  PUB:
+    document.getElementById("PUB_OD").checked ||
+    document.getElementById("PUB_DO").checked,
 
-  P2P_OD: document.getElementById("P2P_OD").checked,
-  P2P_DO: document.getElementById("P2P_DO").checked
+  P2P:
+    document.getElementById("P2P_OD").checked ||
+    document.getElementById("P2P_DO").checked
 };
 
-if(!legend[legendKey])
+const denoKey =
+  p.deno === "Mini bus"
+    ? "MINI"
+    : p.deno;
+
+if(!legend[denoKey])
   return;
+
 
 const routeClass =
   (p.route_study || "").trim() ||
   "Unclassified*";
+
+let routeRatStatus;
+
+if(
+  p.status === "Approved" ||
+  p.status === "Suspended"
+){
+  routeRatStatus = "Approved";
+}else if(p.status === "Superseded"){
+  return;
+}else{
+  routeRatStatus = "For RouteRat";
+}
+
+if(!checkedRouteRat.has(routeRatStatus))
+  return;
+
+
 
 if(!checkedClasses.has(routeClass))
   return;
@@ -1649,11 +1809,6 @@ if(!officeStats[p.region]){
   };
 }
 
-    const denoKey =
-      p.deno === "Mini bus"
-      ? "MINI"
-      : p.deno;
-
 const classKey =
   p.region + "|" +
   routeClass + "|" +
@@ -1669,6 +1824,31 @@ if(!countedClass.has(classKey)){
     Number(p.authorized_units || 0);
 
 }
+
+const routeRatKey =
+  p.region + "|" +
+  routeRatStatus + "|" +
+  p.route_name;
+
+if(!countedRouteRat.has(routeRatKey)){
+
+  countedRouteRat.add(routeRatKey);
+
+  if(!routeRatStats[routeRatStatus]){
+    routeRatStats[routeRatStatus] = {
+      routes:0,
+      units:0
+    };
+  }
+
+  routeRatStats[routeRatStatus].routes++;
+
+  routeRatStats[routeRatStatus].units +=
+    Number(p.authorized_units || 0);
+
+}
+
+
 
 const key =
   p.region + "|" +
@@ -1866,6 +2046,69 @@ document.getElementById(
   "classTotalFleet"
 ).textContent = classTotalUnits;
 
+// ===== UPDATE ROUTERAT STATUS TABLE =====
+
+let routeRatTotalRoutes = 0;
+let routeRatTotalUnits = 0;
+
+// Reset displayed values
+document
+  .querySelectorAll(".routeRatFilter")
+  .forEach(cb => {
+
+    const safeStatus =
+      cb.dataset.status.replace(/[^a-zA-Z0-9]/g,"_");
+
+    const routesCell =
+      document.getElementById(`${safeStatus}_routes`);
+
+    const unitsCell =
+      document.getElementById(`${safeStatus}_units`);
+
+    if(routesCell)
+      routesCell.textContent = 0;
+
+    if(unitsCell)
+      unitsCell.textContent = 0;
+
+});
+
+Object.keys(routeRatStats).forEach(status => {
+
+  const safeStatus =
+    status.replace(/[^a-zA-Z0-9]/g,"_");
+
+  const routes =
+    routeRatStats[status].routes;
+
+  const units =
+    routeRatStats[status].units;
+
+  routeRatTotalRoutes += routes;
+  routeRatTotalUnits += units;
+
+const routesCell =
+  document.getElementById(`${safeStatus}_routes`);
+
+const unitsCell =
+  document.getElementById(`${safeStatus}_units`);
+
+  if(routesCell)
+    routesCell.textContent = routes;
+
+  if(unitsCell)
+    unitsCell.textContent = units;
+
+});
+
+document.getElementById(
+  "routeRatTotalRoutes"
+).textContent = routeRatTotalRoutes;
+
+document.getElementById(
+  "routeRatTotalFleet"
+).textContent = routeRatTotalUnits;
+
 
 
 document.getElementById(
@@ -1923,6 +2166,16 @@ document
     );
   });
 
+const selectedRouteRat = new Set();
+
+document
+  .querySelectorAll(".routeRatFilter:checked")
+  .forEach(cb => {
+    selectedRouteRat.add(
+      cb.dataset.status
+    );
+  });
+
   const zoom = map.getZoom();
   updateStatsTable();
 
@@ -1959,11 +2212,30 @@ const routeClass =
 const classVisible =
   selectedClasses.has(routeClass);
 
+let routeRatStatus;
+
+if(
+  p.status === "Approved" ||
+  p.status === "Suspended"
+){
+  routeRatStatus = "Approved";
+}else if(p.status === "Superseded"){
+  routeRatStatus = null;
+}else{
+  routeRatStatus = "For RouteRat";
+}
+
+const routeRatVisible =
+  routeRatStatus &&
+  selectedRouteRat.has(routeRatStatus);
+
+
 const visible =
   dirVisible &&
   legendVisible &&
   regionVisible &&
-  classVisible;
+  classVisible &&
+  routeRatVisible;
 
       layer.setStyle({
         opacity: visible ? 1 : 0
@@ -1992,13 +2264,39 @@ stopsLayer.eachLayer(l => {
       `.regionFilter[data-region="${l._region}"]`
     )?.checked ?? true;
 
-  const visible =
-    ((l._direction === "OD" && showOD) ||
-     (l._direction === "DO" && showDO)) &&
-    showStops &&
-    zoom >= 14 &&
-    legendVisible &&
-    regionVisible;
+const routeClass =
+  (l._routeStudy || "").trim() ||
+  "Unclassified*";
+
+const classVisible =
+  selectedClasses.has(routeClass);
+
+let routeRatStatus;
+
+if(
+  l._status === "Approved" ||
+  l._status === "Suspended"
+){
+  routeRatStatus = "Approved";
+}else if(l._status === "Superseded"){
+  routeRatStatus = null;
+}else{
+  routeRatStatus = "For RouteRat";
+}
+
+const routeRatVisible =
+  routeRatStatus &&
+  selectedRouteRat.has(routeRatStatus);
+
+const visible =
+  ((l._direction === "OD" && showOD) ||
+   (l._direction === "DO" && showDO)) &&
+  showStops &&
+  zoom >= 14 &&
+  legendVisible &&
+  regionVisible &&
+  classVisible &&
+  routeRatVisible;
 
   if (visible) {
     map.addLayer(l);
@@ -2020,20 +2318,46 @@ endpointsLayer.eachLayer(l => {
       `.regionFilter[data-region="${l._region}"]`
     )?.checked ?? true;
 
+  const routeClass =
+    (l._routeStudy || "").trim() ||
+    "Unclassified*";
+
+  const classVisible =
+    selectedClasses.has(routeClass);
+
+  let routeRatStatus;
+
+  if(
+    l._status === "Approved" ||
+    l._status === "Suspended"
+  ){
+    routeRatStatus = "Approved";
+  }else if(l._status === "Superseded"){
+    routeRatStatus = null;
+  }else{
+    routeRatStatus = "For RouteRat";
+  }
+
+  const routeRatVisible =
+    routeRatStatus &&
+    selectedRouteRat.has(routeRatStatus);
+
   const visible =
     ((l._direction === "OD" && showOD) ||
      (l._direction === "DO" && showDO)) &&
     showEndpoints &&
     zoom >= 14 &&
     legendVisible &&
-    regionVisible;
-
+    regionVisible &&
+    classVisible &&
+    routeRatVisible;
 
   if (visible) {
     map.addLayer(l);
   } else {
     map.removeLayer(l);
   }
+
 });
 
 
@@ -2215,7 +2539,7 @@ obj.sleeper.setZIndexOffset?.(1000);
 });
 
   // ==== PUV STOPS + ENDPOINTS ====
-  fetch('https://script.google.com/macros/s/AKfycbwnZSRDANhjJnJUGfCVCUrWBQHOdcTfApaSoTRmPLauW0vaajJFpzMuTpr1__Frq4Jp/exec')
+  fetch('https://script.google.com/macros/s/AKfycbzsqntRynP4monoRjbC8AcjMd4CiABl92Ql7vokCOMUgThIq642NAxq1xovaDvSMx-3Dw/exec')
   .then(res=>res.json())
   .then(data=>{
     data.features.forEach(feature=>{
@@ -2266,6 +2590,13 @@ console.log("STOP:", feature.properties);
 marker._direction = dir;
 marker._deno = feature.properties.deno;
 marker._region = feature.properties.region;
+marker._routeStudy =
+  (feature.properties.route_study || "").trim() ||
+  "Unclassified*";
+
+marker._status =
+  (feature.properties.status || "").trim();
+
 
 marker.bindPopup(
   feature.properties.stop ||
@@ -2301,6 +2632,13 @@ if(type==="Endpoint") {
 marker._direction = dir;
 marker._deno = feature.properties.deno;
 marker._region = feature.properties.region;
+marker._routeStudy =
+  (feature.properties.route_study || "").trim() ||
+  "Unclassified*";
+
+marker._status =
+  (feature.properties.status || "").trim();
+
 
 marker.bindPopup(
   feature.properties.endpoint ||
