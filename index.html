@@ -1009,6 +1009,71 @@ border-top:1px solid #999;
 
 </div>
 
+<div class="panel-box">
+
+<div style="
+font-weight:bold;
+font-size:16px;
+margin-bottom:8px;
+">
+Summary by Green Route
+</div>
+
+<table
+id="greenRouteTable"
+style="
+width:100%;
+font-size:12px;
+border-collapse:collapse;
+">
+
+<tr>
+<th></th>
+<th align="left">Route Type</th>
+<th align="right">Routes</th>
+<th align="right">Fleet</th>
+</tr>
+
+<tr>
+<td>
+<input
+type="checkbox"
+class="greenRouteFilter"
+data-green="Green Route"
+checked>
+</td>
+<td>Green Route</td>
+<td id="Green_Route_routes" align="right">0</td>
+<td id="Green_Route_units" align="right">0</td>
+</tr>
+
+<tr>
+<td>
+<input
+type="checkbox"
+class="greenRouteFilter"
+data-green="Regular Route"
+checked>
+</td>
+<td>Regular Route</td>
+<td id="Regular_Route_routes" align="right">0</td>
+<td id="Regular_Route_units" align="right">0</td>
+</tr>
+
+<tr style="
+font-weight:bold;
+border-top:1px solid #999;
+">
+<td></td>
+<td>TOTAL</td>
+<td id="greenRouteTotalRoutes" align="right">0</td>
+<td id="greenRouteTotalFleet" align="right">0</td>
+</tr>
+
+</table>
+
+</div>
+
 
 </div>
 
@@ -1664,7 +1729,7 @@ setTimeout(() => {
   if (el) el.addEventListener("change", toggleLayers);
 });
 
-// LTFRB OFFICE + ROUTE CLASS + ROUTERAT FILTERS
+// LTFRB OFFICE + ROUTE CLASS + ROUTERAT + GREEN ROUTE FILTERS
 document.addEventListener("change", function(e){
 
   if(
@@ -1672,14 +1737,14 @@ document.addEventListener("change", function(e){
     (
       e.target.classList.contains("regionFilter") ||
       e.target.classList.contains("routeClassFilter") ||
-      e.target.classList.contains("routeRatFilter")
+      e.target.classList.contains("routeRatFilter") ||
+      e.target.classList.contains("greenRouteFilter")
     )
   ){
     toggleLayers();
   }
 
 });
-
 
 function updateStatsTable(){
 
@@ -1688,11 +1753,12 @@ function updateStatsTable(){
 const officeStats = {};
 const classStats = {};
 const routeRatStats = {};
+const greenRouteStats = {};
 
 const countedClass = new Set();
 const countedRouteRat = new Set();
-
 const checkedClasses = new Set();
+const countedGreen = new Set();
 
 
 document
@@ -1713,6 +1779,15 @@ document
     );
   });
 
+const checkedGreenRoutes = new Set();
+
+document
+  .querySelectorAll(".greenRouteFilter:checked")
+  .forEach(cb=>{
+    checkedGreenRoutes.add(
+      cb.dataset.green
+    );
+  });
 
   document
     .querySelectorAll(".regionFilter:checked")
@@ -1791,6 +1866,20 @@ if(!checkedRouteRat.has(routeRatStatus))
   return;
 
 
+let greenType;
+
+if(
+  (p.electric || "").trim() === "Yes"
+){
+  greenType = "Green Route";
+}else{
+  greenType = "Regular Route";
+}
+
+if(!checkedGreenRoutes.has(greenType))
+  return;
+
+
 
 if(!checkedClasses.has(routeClass))
   return;
@@ -1848,6 +1937,29 @@ if(!countedRouteRat.has(routeRatKey)){
 
 }
 
+
+const greenKey =
+  p.region + "|" +
+  greenType + "|" +
+  p.route_name;
+
+if(!countedGreen.has(greenKey)){
+
+  countedGreen.add(greenKey);
+
+  if(!greenRouteStats[greenType]){
+    greenRouteStats[greenType] = {
+      routes:0,
+      units:0
+    };
+  }
+
+  greenRouteStats[greenType].routes++;
+
+  greenRouteStats[greenType].units +=
+    Number(p.authorized_units || 0);
+
+}
 
 
 const key =
@@ -2101,6 +2213,72 @@ const unitsCell =
 
 });
 
+
+// ===== UPDATE GREEN ROUTE TABLE =====
+
+let greenRouteTotalRoutes = 0;
+let greenRouteTotalUnits = 0;
+
+// Reset displayed values
+document
+  .querySelectorAll(".greenRouteFilter")
+  .forEach(cb => {
+
+    const safeGreen =
+      cb.dataset.green.replace(/[^a-zA-Z0-9]/g,"_");
+
+    const routesCell =
+      document.getElementById(`${safeGreen}_routes`);
+
+    const unitsCell =
+      document.getElementById(`${safeGreen}_units`);
+
+    if(routesCell)
+      routesCell.textContent = 0;
+
+    if(unitsCell)
+      unitsCell.textContent = 0;
+
+});
+
+Object.keys(greenRouteStats).forEach(greenType => {
+
+  const safeGreen =
+    greenType.replace(/[^a-zA-Z0-9]/g,"_");
+
+  const routes =
+    greenRouteStats[greenType].routes;
+
+  const units =
+    greenRouteStats[greenType].units;
+
+  greenRouteTotalRoutes += routes;
+  greenRouteTotalUnits += units;
+
+  const routesCell =
+    document.getElementById(`${safeGreen}_routes`);
+
+  const unitsCell =
+    document.getElementById(`${safeGreen}_units`);
+
+  if(routesCell)
+    routesCell.textContent = routes;
+
+  if(unitsCell)
+    unitsCell.textContent = units;
+
+});
+
+document.getElementById(
+  "greenRouteTotalRoutes"
+).textContent = greenRouteTotalRoutes;
+
+document.getElementById(
+  "greenRouteTotalFleet"
+).textContent = greenRouteTotalUnits;
+
+
+
 document.getElementById(
   "routeRatTotalRoutes"
 ).textContent = routeRatTotalRoutes;
@@ -2166,6 +2344,16 @@ document
     );
   });
 
+const selectedGreenRoutes = new Set();
+
+document
+  .querySelectorAll(".greenRouteFilter:checked")
+  .forEach(cb => {
+    selectedGreenRoutes.add(
+      cb.dataset.green
+    );
+  });
+
 const selectedRouteRat = new Set();
 
 document
@@ -2212,6 +2400,15 @@ const routeClass =
 const classVisible =
   selectedClasses.has(routeClass);
 
+const greenType =
+  p.electric === "Yes"
+    ? "Green Route"
+    : "Regular Route";
+
+const greenVisible =
+  selectedGreenRoutes.has(greenType);
+
+
 let routeRatStatus;
 
 if(
@@ -2235,7 +2432,8 @@ const visible =
   legendVisible &&
   regionVisible &&
   classVisible &&
-  routeRatVisible;
+  routeRatVisible &&
+  greenVisible;
 
       layer.setStyle({
         opacity: visible ? 1 : 0
@@ -2288,6 +2486,14 @@ const routeRatVisible =
   routeRatStatus &&
   selectedRouteRat.has(routeRatStatus);
 
+const greenType =
+  l._electric === "Yes"
+    ? "Green Route"
+    : "Regular Route";
+
+const greenVisible =
+  selectedGreenRoutes.has(greenType);
+
 const visible =
   ((l._direction === "OD" && showOD) ||
    (l._direction === "DO" && showDO)) &&
@@ -2296,7 +2502,8 @@ const visible =
   legendVisible &&
   regionVisible &&
   classVisible &&
-  routeRatVisible;
+  routeRatVisible &&
+  greenVisible;
 
   if (visible) {
     map.addLayer(l);
@@ -2342,6 +2549,15 @@ endpointsLayer.eachLayer(l => {
     routeRatStatus &&
     selectedRouteRat.has(routeRatStatus);
 
+const greenType =
+  l._electric === "Yes"
+    ? "Green Route"
+    : "Regular Route";
+
+const greenVisible =
+  selectedGreenRoutes.has(greenType);
+
+
   const visible =
     ((l._direction === "OD" && showOD) ||
      (l._direction === "DO" && showDO)) &&
@@ -2350,7 +2566,9 @@ endpointsLayer.eachLayer(l => {
     legendVisible &&
     regionVisible &&
     classVisible &&
-    routeRatVisible;
+    routeRatVisible &&
+    greenVisible;
+
 
   if (visible) {
     map.addLayer(l);
@@ -2539,7 +2757,7 @@ obj.sleeper.setZIndexOffset?.(1000);
 });
 
   // ==== PUV STOPS + ENDPOINTS ====
-  fetch('https://script.google.com/macros/s/AKfycbzsqntRynP4monoRjbC8AcjMd4CiABl92Ql7vokCOMUgThIq642NAxq1xovaDvSMx-3Dw/exec')
+  fetch('https://script.google.com/macros/s/AKfycbwFO47D6-Ca-fiU8B62Wfe_ahHR9NTFP3squANggV8uwYh9iCpbHW68VGF878yP5WTmYw/exec')
   .then(res=>res.json())
   .then(data=>{
     data.features.forEach(feature=>{
@@ -2597,6 +2815,9 @@ marker._routeStudy =
 marker._status =
   (feature.properties.status || "").trim();
 
+marker._electric =
+  (feature.properties.electric || "").trim();
+
 
 marker.bindPopup(
   feature.properties.stop ||
@@ -2639,6 +2860,8 @@ marker._routeStudy =
 marker._status =
   (feature.properties.status || "").trim();
 
+marker._electric =
+  (feature.properties.electric || "").trim();
 
 marker.bindPopup(
   feature.properties.endpoint ||
