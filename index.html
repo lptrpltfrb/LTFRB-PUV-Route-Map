@@ -17,8 +17,6 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 
   
-
-
 <style>
     body { margin:0; padding:0; }
     #map { height: 100vh; width: 100vw; }
@@ -346,7 +344,7 @@
   left:10px;
   z-index:1000;
 
-  width:280px;
+  width:310px;
   background:rgba(255,255,255,0.96);
   border-radius:10px;
   padding:12px;
@@ -523,6 +521,31 @@
   opacity: 0.7;
 }
 
+/* ========================================= */
+/* SUMMARY PANEL LAYOUT                      */
+/* ========================================= */
+
+.summaryGrid{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.summaryLeft{
+  flex:0 0 48%;
+}
+
+.summaryRight{
+  flex:1;
+  min-width:0;
+}
+
+.summaryLeft .panel-box,
+.summaryRight .panel-box{
+  margin-bottom:12px;
+}
+
+
   </style>
 </head>
 
@@ -560,7 +583,7 @@ font-weight:bold;
 margin-bottom:6px;
 padding:0 4px;
 ">
-  <div></div>
+  <div>Mode</div>
   <div style="text-align:right;">Routes</div>
   <div style="text-align:right;">Fleet</div>
 </div>
@@ -830,10 +853,10 @@ padding:0 4px;
 <div id="regionPanel" style="
 position:absolute;
 top:15px;
-left:320px;
-width:280px;
+left:350px;
+width:480px;
 max-height:80vh;
-overflow:auto;
+overflow:visible;
 
 background:white;
 border-radius:10px;
@@ -845,6 +868,10 @@ display:none;
 z-index:2000;
 ">
 
+<div class="summaryGrid">
+
+<div class="summaryLeft">
+
 <div class="panel-box">
 
 <div style="
@@ -852,7 +879,8 @@ font-weight:bold;
 font-size:16px;
 margin-bottom:8px;
 ">
-Summary by Office
+Summary by LTFRB Office
+
 </div>
 
 <table
@@ -885,6 +913,10 @@ border-top:1px solid #999;
 
 </div>
 
+</div>
+
+<div class="summaryRight">
+
 <div class="panel-box">
 
 <div style="
@@ -892,7 +924,7 @@ font-weight:bold;
 font-size:16px;
 margin-bottom:8px;
 ">
-Summary by Route Classification
+Summary by Route Class
 
 <div
 id="routeClassWarning"
@@ -1029,7 +1061,7 @@ border-collapse:collapse;
 
 <tr>
 <th></th>
-<th align="left">Route Type</th>
+<th align="left">Type</th>
 <th align="right">Routes</th>
 <th align="right">Fleet</th>
 </tr>
@@ -1074,6 +1106,9 @@ border-top:1px solid #999;
 
 </div>
 
+</div>
+
+</div>
 
 </div>
 
