@@ -2424,9 +2424,9 @@ const legendVisible = legend[legendKey] ?? true;
 
 // FINAL VISIBILITY RULE
 const regionVisible =
-  selectedRegions.has(
-    p.region
-  );
+  p.region === "Inter-Region"
+    ? true
+    : selectedRegions.has(p.region);
 
 const routeClass =
   (p.route_study || "").trim() ||
@@ -2470,9 +2470,28 @@ const visible =
   routeRatVisible &&
   greenVisible;
 
-      layer.setStyle({
-        opacity: visible ? 1 : 0
-      });
+if (!visible) {
+  console.log("ROUTE HIDDEN");
+  console.log("Route:", p.route_name);
+
+  console.log({
+    dirVisible,
+    legendVisible,
+    regionVisible,
+    classVisible,
+    routeRatVisible,
+    greenVisible,
+
+    region: p.region,
+    routeStudy: p.route_study,
+    status: p.status,
+    electric: p.electric
+  });
+}
+
+layer.setStyle({
+  opacity: visible ? 1 : 0
+});
 
       // arrows
       if (layer._decorator) {
@@ -2492,10 +2511,14 @@ stopsLayer.eachLayer(l => {
 
   const legendVisible = legend[key] ?? true;
 
-  const regionVisible =
-    document.querySelector(
-      `.regionFilter[data-region="${l._region}"]`
-    )?.checked ?? true;
+const regionVisible =
+  l._region === "Inter-Region"
+    ? true
+    : (
+        document.querySelector(
+          `.regionFilter[data-region="${l._region}"]`
+        )?.checked ?? true
+      );
 
 const routeClass =
   (l._routeStudy || "").trim() ||
@@ -2555,10 +2578,14 @@ endpointsLayer.eachLayer(l => {
 
   const legendVisible = legend[key] ?? true;
 
-  const regionVisible =
-    document.querySelector(
-      `.regionFilter[data-region="${l._region}"]`
-    )?.checked ?? true;
+const regionVisible =
+  l._region === "Inter-Region"
+    ? true
+    : (
+        document.querySelector(
+          `.regionFilter[data-region="${l._region}"]`
+        )?.checked ?? true
+      );
 
   const routeClass =
     (l._routeStudy || "").trim() ||
