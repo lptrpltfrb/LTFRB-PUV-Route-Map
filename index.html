@@ -1351,6 +1351,10 @@ function getRouteColor(deno, direction) {
   return colors[deno]?.[direction] || "#FFFFFF";
 }
 
+function isRouteVisible(layer){
+    return layer._visible === true;
+}
+
 function distanceToPolyline(latlng, layer){
 
   let minDist = Infinity;
@@ -1581,12 +1585,19 @@ layer.on('mouseover', function(e){
 
   const routesToHighlight = [];
 
-  // highlight both OD and DO of any route near the cursor
-  routesLayer.eachLayer(l => {
-    if(distanceToPolyline(latlng, l) <= 10){
-      routesToHighlight.push(l.feature);
-    }
-  });
+// highlight both OD and DO of any visible route near the cursor
+routesLayer.eachLayer(l => {
+
+  // Skip routes that are currently hidden
+if (!isRouteVisible(l))
+  return;
+
+
+  if(distanceToPolyline(latlng, l) <= 10){
+    routesToHighlight.push(l.feature);
+  }
+
+});
 
   // draw them on top using dedicated hoverHighlightLayer
   hoverHighlightLayer.addData(routesToHighlight);
@@ -1660,6 +1671,9 @@ const groupedRoutes = {
 const groupedSeen = new Set();
 
 routesLayer.eachLayer(l => {
+
+if (!isRouteVisible(l))
+  return;
 
   if(distanceToPolyline(latlng, l) <= 10){
 
@@ -1837,7 +1851,13 @@ setTimeout(() => {
   "P2P_OD","P2P_DO"
 ].forEach(id=>{
   const el = document.getElementById(id);
-  if (el) el.addEventListener("change", toggleLayers);
+
+  if (el) {
+    el.addEventListener("change", function(){
+      toggleLayers();
+      updateLegendStats();
+    });
+  }
 });
 
 // LTFRB OFFICE + ROUTE CLASS + ROUTERAT + GREEN ROUTE FILTERS
@@ -1872,12 +1892,21 @@ function updateLegendStats(){
 
   allRouteFeatures.forEach(feature=>{
 
-    const p = feature.properties;
+const p = feature.properties;
 
-    const denoKey =
-      p.deno === "Mini bus"
-        ? "MINI"
-        : p.deno;
+const denoKey =
+  p.deno === "Mini bus"
+    ? "MINI"
+    : p.deno;
+
+const checkboxId =
+  denoKey + "_" + p.direction;
+
+const checkbox =
+  document.getElementById(checkboxId);
+
+if (checkbox && !checkbox.checked)
+  return;
 
     const key =
       denoKey + "|" + p.route_name;
@@ -1992,9 +2021,20 @@ function toggleLayers() {
         dirVisible &&
         legendVisible;
 
-      layer.setStyle({
-        opacity: visible ? 1 : 0
-      });
+layer._visible = visible;
+
+layer._visible = visible;
+
+layer.setStyle({
+  opacity: visible ? 1 : 0,
+  interactive: visible
+});
+
+if (layer._path) {
+    layer._path.style.pointerEvents = visible ? "auto" : "none";
+}
+
+layer.options.interactive = visible;
 
       if (layer._decorator) {
 
