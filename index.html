@@ -577,7 +577,7 @@
 
 <div style="
 display:grid;
-grid-template-columns: 1fr 55px 55px;
+grid-template-columns: 1fr 45px 45px 45px;
 font-size:11px;
 font-weight:bold;
 margin-bottom:6px;
@@ -585,7 +585,8 @@ padding:0 4px;
 ">
   <div>Mode</div>
   <div style="text-align:right;">Routes</div>
-  <div style="text-align:right;">Fleet</div>
+  <div style="text-align:right;">FS</div>
+  <div style="text-align:right;">NAU</div>
 </div>
 
 <!-- PUJ -->
@@ -595,12 +596,13 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 55px 55px;
+grid-template-columns:1fr 45px 45px 45px;
 margin-bottom:2px;
 ">
   <div>PUJ</div>
   <div id="stat_PUJ_routes" style="text-align:right;">0</div>
-  <div id="stat_PUJ_units" style="text-align:right;">0</div>
+  <div id="stat_PUJ_fs" style="text-align:right;">0</div>
+  <div id="stat_PUJ_nau" style="text-align:right;">0</div>
 </div>
 
 <div style="
@@ -632,13 +634,14 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 55px 55px;
+grid-template-columns:1fr 45px 45px 45px;
 margin-top:6px;
 margin-bottom:2px;
 ">
   <div>UVE</div>
   <div id="stat_UVE_routes" style="text-align:right;">0</div>
-  <div id="stat_UVE_units" style="text-align:right;">0</div>
+  <div id="stat_UVE_fs" style="text-align:right;">0</div>
+  <div id="stat_UVE_nau" style="text-align:right;">0</div>
 </div>
 
 <div style="
@@ -669,13 +672,14 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 55px 55px;
+grid-template-columns:1fr 45px 45px 45px;
 margin-top:6px;
 margin-bottom:2px;
 ">
   <div>MB</div>
   <div id="stat_MINI_routes" style="text-align:right;">0</div>
-  <div id="stat_MINI_units" style="text-align:right;">0</div>
+  <div id="stat_MINI_fs" style="text-align:right;">0</div>
+  <div id="stat_MINI_nau" style="text-align:right;">0</div>
 </div>
 
 <div style="
@@ -706,13 +710,14 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 55px 55px;
+grid-template-columns:1fr 45px 45px 45px;
 margin-top:6px;
 margin-bottom:2px;
 ">
   <div>PUB</div>
   <div id="stat_PUB_routes" style="text-align:right;">0</div>
-  <div id="stat_PUB_units" style="text-align:right;">0</div>
+  <div id="stat_PUB_fs" style="text-align:right;">0</div>
+  <div id="stat_PUB_nau" style="text-align:right;">0</div>
 </div>
 
 <div style="
@@ -743,13 +748,14 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 55px 55px;
+grid-template-columns:1fr 45px 45px 45px;
 margin-top:6px;
 margin-bottom:2px;
 ">
   <div>P2P</div>
   <div id="stat_P2P_routes" style="text-align:right;">0</div>
-  <div id="stat_P2P_units" style="text-align:right;">0</div>
+  <div id="stat_P2P_fs" style="text-align:right;">0</div>
+  <div id="stat_P2P_nau" style="text-align:right;">0</div>
 </div>
 
 <div style="
@@ -777,13 +783,14 @@ margin-bottom:2px;
 
 <div style="
 display:grid;
-grid-template-columns:1fr 55px 55px;
+grid-template-columns:1fr 45px 45px 45px;
 font-weight:bold;
 padding:0 4px;
 ">
   <div>TOTAL</div>
   <div id="stat_TOTAL_routes" style="text-align:right;">0</div>
-  <div id="stat_TOTAL_units" style="text-align:right;">0</div>
+  <div id="stat_TOTAL_fs" style="text-align:right;">0</div>
+  <div id="stat_TOTAL_nau" style="text-align:right;">0</div>
 </div>
 </div> <!-- END LEGEND BOX -->
 
@@ -1379,7 +1386,7 @@ function distanceToPolyline(latlng, layer){
   const endpointsLayer = L.layerGroup();
 
   // ==== FETCH PUV ROUTES ====
-  fetch('https://script.google.com/macros/s/AKfycbyx3fusPm2L8IUYV7OdUofUCpep5FQMbhk3h450aN3L9Rqn56d3fozQXNI1W0hEPPHgAg/exec')
+  fetch('https://script.google.com/macros/s/AKfycbzaTq47J2w99x2dgKOFMclV9UK9OOPNDPrKjwPFrsnnjuGXjqj3aBa-sNx0TNDEj4khpA/exec')
   .then(res => res.json())
   .then(data => {
     const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
@@ -1584,23 +1591,53 @@ layer.on('mouseover', function(e){
   // draw them on top using dedicated hoverHighlightLayer
   hoverHighlightLayer.addData(routesToHighlight);
 
-  // tooltip
-  const uniqueRoutes = new Set();
-  routesToHighlight.forEach(f => uniqueRoutes.add(f.properties.route_name));
+// tooltip
+const uniqueRoutes = new Set();
+const denoCounts = {};
 
-  if(hoverTooltip) map.removeLayer(hoverTooltip);
+routesToHighlight.forEach(f => {
+
+  const p = f.properties;
+
+  // Count each Route + DENO only once (OD + DO = one route)
+  const routeKey = p.route_name + "|" + p.deno;
+
+  if (uniqueRoutes.has(routeKey))
+    return;
+
+  uniqueRoutes.add(routeKey);
+
+  let deno = p.deno;
+
+  if (deno === "Mini bus")
+    deno = "MB";
+
+  denoCounts[deno] = (denoCounts[deno] || 0) + 1;
+
+});
+
+const totalRoutes = Object.values(denoCounts).reduce((a,b)=>a+b,0);
+
+let tooltipHTML = `<b>${totalRoutes} Routes</b><br>`;
+
+Object.entries(denoCounts)
+  .sort((a,b) => b[1] - a[1])
+  .forEach(([deno,count]) => {
+    tooltipHTML += `${count} ${deno}<br>`;
+  });
+
+if(hoverTooltip) map.removeLayer(hoverTooltip);
 
 hoverTooltip = L.tooltip({
   permanent: false,
   direction: 'top',
   className: 'hover-tooltip',
-  pane: 'highlightPane',   // IMPORTANT FIX
-  interactive: false        // IMPORTANT FIX
+  pane: 'highlightPane',
+  interactive: false
 })
-
-  .setLatLng(latlng)
-  .setContent(uniqueRoutes.size + " Routes")
-  .addTo(map);
+.setLatLng(latlng)
+.setContent(tooltipHTML)
+.addTo(map);
 });
 
 
@@ -1609,15 +1646,49 @@ layer.on('click', function(e){
   const latlng = e.latlng;
 
   // DO NOT reset clickedLayers here! Only collect routes at click point
-  const clickedRoutes = new Set();
-  const clickedLayersTemp = [];
+const clickedRoutes = new Set();
+const clickedLayersTemp = [];
+const groupedRoutes = {
+  PUB: [],
+  UVE: [],
+  PUJ: [],
+  MB: [],
+  P2P: [],
+  OTHER: []
+};
 
-  routesLayer.eachLayer(l => {
-    if(distanceToPolyline(latlng, l) <= 10){
-      clickedRoutes.add(l.feature.properties.route_name);
-      clickedLayersTemp.push(l);
+const groupedSeen = new Set();
+
+routesLayer.eachLayer(l => {
+
+  if(distanceToPolyline(latlng, l) <= 10){
+
+    const p = l.feature.properties;
+
+    clickedRoutes.add(p.route_name);
+    clickedLayersTemp.push(l);
+
+    let deno = p.deno;
+
+    if(deno === "Mini bus")
+      deno = "MB";
+
+    const key = deno + "|" + p.route_name;
+
+    if(!groupedSeen.has(key)){
+
+      groupedSeen.add(key);
+
+      if(!groupedRoutes[deno])
+        deno = "OTHER";
+
+      groupedRoutes[deno].push(p.route_name);
+
     }
-  });
+
+  }
+
+});
 
   clickedLayers = clickedLayersTemp; // store all clicked routes
 
@@ -1650,11 +1721,31 @@ clickedLayers.forEach(l => {
 });
 const popupListDiv = document.getElementById('route-popup-list');
 popupListDiv.style.display = 'block';
-popupListDiv.innerHTML =
-  '<b>Routes at this point:</b><br>' +
-  [...clickedRoutes].map(r =>
-    '<div class="route-item" data-route="' + r + '" style="cursor:pointer;padding:2px 0;">• ' + r + '</div>'
-  ).join('');
+let html = "<b>Routes at this point:</b><br>";
+
+["PUB","UVE","PUJ","MB","P2P","OTHER"].forEach(deno=>{
+
+  if(groupedRoutes[deno].length===0)
+    return;
+
+  html += `<div style="margin-top:6px;font-weight:bold;color:#1565c0;">${deno}</div>`;
+
+  groupedRoutes[deno]
+    .sort()
+    .forEach(route=>{
+
+      html += `<div class="route-item"
+                     data-route="${route}"
+                     style="cursor:pointer;padding-left:14px;padding-top:2px;padding-bottom:2px;">
+                 • ${route}
+               </div>`;
+
+    });
+
+});
+
+popupListDiv.innerHTML = html;
+
 
 if(hoverTooltip){
   map.removeLayer(hoverTooltip);
@@ -1770,11 +1861,11 @@ document.addEventListener("change", function(e){
 function updateLegendStats(){
 
   const stats = {
-    PUJ:{routes:0,units:0},
-    UVE:{routes:0,units:0},
-    MINI:{routes:0,units:0},
-    PUB:{routes:0,units:0},
-    P2P:{routes:0,units:0}
+    PUJ:{routes:0,fs:0,nau:0},
+    UVE:{routes:0,fs:0,nau:0},
+    MINI:{routes:0,fs:0,nau:0},
+    PUB:{routes:0,fs:0,nau:0},
+    P2P:{routes:0,fs:0,nau:0}
   };
 
   const counted = new Set();
@@ -1797,8 +1888,16 @@ function updateLegendStats(){
     counted.add(key);
 
     if(stats[denoKey]){
+
       stats[denoKey].routes++;
-      stats[denoKey].units += Number(p.authorized_units || 0);
+
+
+      // Fleet Size
+      stats[denoKey].fs += Number(p.fleet_size || 0);
+
+      // Number of Authorized Units
+      stats[denoKey].nau += Number(p.authorized_units || 0);
+
     }
 
   });
@@ -1810,8 +1909,12 @@ function updateLegendStats(){
     ).textContent = stats[mode].routes;
 
     document.getElementById(
-      `stat_${mode}_units`
-    ).textContent = stats[mode].units;
+      `stat_${mode}_fs`
+    ).textContent = stats[mode].fs;
+
+    document.getElementById(
+      `stat_${mode}_nau`
+    ).textContent = stats[mode].nau;
 
   });
 
@@ -1819,17 +1922,25 @@ function updateLegendStats(){
     Object.values(stats)
       .reduce((a,b)=>a+b.routes,0);
 
-  const totalUnits =
+  const totalFS =
     Object.values(stats)
-      .reduce((a,b)=>a+b.units,0);
+      .reduce((a,b)=>a+b.fs,0);
+
+  const totalNAU =
+    Object.values(stats)
+      .reduce((a,b)=>a+b.nau,0);
 
   document.getElementById(
     "stat_TOTAL_routes"
   ).textContent = totalRoutes;
 
   document.getElementById(
-    "stat_TOTAL_units"
-  ).textContent = totalUnits;
+    "stat_TOTAL_fs"
+  ).textContent = totalFS;
+
+  document.getElementById(
+    "stat_TOTAL_nau"
+  ).textContent = totalNAU;
 
 }
 
@@ -1938,14 +2049,41 @@ function toggleLayers() {
       ((l._direction === "OD" && showOD) ||
        (l._direction === "DO" && showDO)) &&
       showEndpoints &&
-      zoom >= 14 &&
+      zoom >= 10 &&
       legendVisible;
 
-    if (visible) {
-      map.addLayer(l);
-    } else {
-      map.removeLayer(l);
-    }
+if (visible) {
+
+    let size = 8;
+
+    if (zoom >= 16) size = 20;
+    else if (zoom >= 15) size = 18;
+    else if (zoom >= 14) size = 16;
+    else if (zoom >= 13) size = 14;
+    else if (zoom >= 12) size = 12;
+    else if (zoom >= 11) size = 10;
+
+    l.setIcon(
+      L.divIcon({
+        className:'diamond-endpoint',
+        iconSize:[size,size],
+        html:`<div style="
+          width:${size}px;
+          height:${size}px;
+          background:${l._color};
+          transform:rotate(45deg);
+          border:2px solid #000;
+        "></div>`
+      })
+    );
+
+    map.addLayer(l);
+
+} else {
+
+    map.removeLayer(l);
+
+}
 
   });
 
@@ -1977,6 +2115,7 @@ function toggleLayers() {
   fetch('https://script.google.com/macros/s/AKfycbwMZDfBZzuke-x2Sph6IXMwB4-b6jNPv5nY3Gut-7lb1i1z9tOAFLVxVXN5CRQjOKuL5Q/exec')
   .then(res => res.json())
   .then(data => {
+
     data.features.forEach(feature => {
 if (feature.properties.type === "LINE") {
 
@@ -2134,7 +2273,7 @@ obj.sleeper.setZIndexOffset?.(1000);
 });
 
   // ==== PUV STOPS + ENDPOINTS ====
-  fetch('https://script.google.com/macros/s/AKfycbyoE6-LhyGhziJjJWO6yLYWdBHETY0S11okX-m0ORJGMBsj1v3OLPR8endMdbcUS74wWQ/exec')
+  fetch('https://script.google.com/macros/s/AKfycbzPwREnni9uWQ0U2dciC6qcWAIs52WO_xf8eWYCENdS6-osmztKyXmdAJ-2VubS3XPmnA/exec')
   .then(res=>res.json())
   .then(data=>{
     data.features.forEach(feature=>{
@@ -2150,14 +2289,6 @@ const matchingKey = Object.keys(routeColorLookup).find(k =>
 );
 
 const color = matchingKey ? routeColorLookup[matchingKey] : "#FF00FF";
-
-
-console.log({
-  routeName,
-  dir,
-  matchingKey,
-  color
-});
 
 
 if(!color){
@@ -2214,19 +2345,35 @@ if(type==="Endpoint") {
 
   const paneName = dir === "OD" ? "endpointsODPane" : "endpointsDOPane";
 
-  const marker = L.marker(latlng, {
-    pane: paneName,
-    icon: L.divIcon({
-      className: 'diamond-endpoint',
-      iconSize: [12,12],
-      html: `<div style="
-        width:12px; height:12px; 
-        background:${color};
-        transform: rotate(45deg);
-        border: 2px solid #000;
-      "></div>`
+const zoom = map.getZoom();
+
+let endpointSize = 8;
+
+if (zoom >= 16) endpointSize = 20;
+else if (zoom >= 15) endpointSize = 18;
+else if (zoom >= 14) endpointSize = 16;
+else if (zoom >= 13) endpointSize = 14;
+else if (zoom >= 12) endpointSize = 12;
+else if (zoom >= 11) endpointSize = 10;
+
+const marker = L.marker(latlng, {
+  pane: paneName,
+  icon: L.divIcon({
+    className: 'diamond-endpoint',
+    iconSize: [endpointSize, endpointSize],
+    html: `<div style="
+      width:${endpointSize}px;
+      height:${endpointSize}px;
+      background:${color};
+      transform: rotate(45deg);
+      border: 2px solid #000;
+    "></div>`
+
     })
   });
+
+marker._color = color;
+
 marker._direction = dir;
 marker._deno = feature.properties.deno;
 marker._region = feature.properties.region;
