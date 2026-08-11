@@ -173,6 +173,67 @@
   padding: 2px 0;
 }
 
+/* ===== PUV ROUTE ELEMENTS: TWO COLUMNS ===== */
+
+.puv-elements-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  column-gap:18px;
+  row-gap:2px;
+}
+
+.puv-elements-grid .legend-control{
+  margin:0;
+}
+
+
+/* ===== FILTER POPUP ===== */
+
+#discussionPanel{
+  display:none;
+
+  position:absolute;
+
+  left:calc(100% + 10px);
+  bottom:0;
+
+  width:280px;
+
+  background:rgba(255,255,255,0.97);
+
+  padding:12px;
+
+  border-radius:10px;
+
+  box-shadow:0 3px 10px rgba(0,0,0,0.25);
+
+  z-index:1100;
+}
+
+.filter-popup-title{
+  font-weight:bold;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+#discussionPanel select{
+  width:100%;
+  box-sizing:border-box;
+  padding:6px;
+  margin-top:4px;
+}
+
+#discussionPanel .particular-label{
+  display:block;
+  margin-top:10px;
+}
+
+#discussionPanel #particularSelect{
+  min-height:100px;
+}
+
+
+
 /* FIXED ICON SLOT (this is the key) */
 .legend-sample{
   width: 28px;
@@ -344,7 +405,7 @@
   left:10px;
   z-index:1000;
 
-  width:310px;
+  width:350px;
   background:rgba(255,255,255,0.96);
   border-radius:10px;
   padding:12px;
@@ -369,6 +430,16 @@
 .panel-box + .panel-box{
   margin-top: 2px;
 }
+
+
+/* ===== LEGEND NUMBER COLUMNS ===== */
+
+#sidebar .panel-box [id^="stat_"]{
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 
 
 /* ===== HEADER ===== */
@@ -577,7 +648,7 @@
 
 <div style="
 display:grid;
-grid-template-columns: 1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 font-size:11px;
 font-weight:bold;
 margin-bottom:6px;
@@ -596,7 +667,7 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 margin-bottom:2px;
 ">
   <div>PUJ</div>
@@ -634,7 +705,7 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 margin-top:6px;
 margin-bottom:2px;
 ">
@@ -672,7 +743,7 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 margin-top:6px;
 margin-bottom:2px;
 ">
@@ -710,7 +781,7 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 margin-top:6px;
 margin-bottom:2px;
 ">
@@ -748,7 +819,7 @@ padding:4px 8px;
 border-radius:4px;
 font-weight:bold;
 display:grid;
-grid-template-columns:1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 margin-top:6px;
 margin-bottom:2px;
 ">
@@ -783,7 +854,7 @@ margin-bottom:2px;
 
 <div style="
 display:grid;
-grid-template-columns:1fr 45px 45px 45px;
+grid-template-columns:1fr 65px 75px 90px;
 font-weight:bold;
 padding:0 4px;
 ">
@@ -801,7 +872,11 @@ padding:0 4px;
 
   <div class="panel-title">DISPLAY CONTROLS</div>
 
-  <div class="panel-section">PUV Route Elements</div>
+<div class="panel-section">PUV Route Elements</div>
+
+<div class="puv-elements-grid">
+
+  <!-- LEFT COLUMN -->
 
   <label class="legend-control">
     <input type="checkbox" id="od" checked>
@@ -821,6 +896,9 @@ padding:0 4px;
     Direction Arrows
   </label>
 
+
+  <!-- RIGHT COLUMN -->
+
   <label class="legend-control">
     <input type="checkbox" id="endpoints" checked>
     <span class="legend-sample endpoint"></span>
@@ -833,6 +911,8 @@ padding:0 4px;
     Stops
   </label>
 
+</div>
+
   <div class="panel-section">Other Transportation</div>
 
   <label class="legend-control">
@@ -844,16 +924,52 @@ padding:0 4px;
 </div>
 
 
-  <button id="openRegionPanel"
+<!-- ===================== -->
+<!-- DISCUSSION FILTERS -->
+<!-- ===================== -->
 
+<button id="openDiscussionPanel"
+  type="button"
   style="
     width:100%;
     padding:8px;
     cursor:pointer;
   ">
-    FILTERS
-  </button>
+  FILTER
+</button>
 
+<div id="discussionPanel">
+
+  <div class="filter-popup-title">
+    FILTER
+  </div>
+
+  <label>
+    FOR DISCUSSION
+    <select id="discussionSelect">
+      <option value="">ALL</option>
+    </select>
+  </label>
+
+<label class="particular-label">
+  PARTICULARS
+</label>
+
+<select id="particularSelect" multiple>
+</select>
+
+<button id="clearParticularBtn"
+  type="button"
+  style="
+    width:100%;
+    margin-top:6px;
+    padding:6px;
+    cursor:pointer;
+  ">
+  CLEAR SELECTION
+</button>
+
+</div>
 
 </div>
 
@@ -1172,6 +1288,22 @@ border-top:1px solid #999;
 const map = L.map('map', {
   zoomControl:false
 }).setView([12.8797, 121.7740], 6);
+
+
+// =====================================================
+// KEEP LEAFLET MAP ALIGNED WHEN CONTAINER CHANGES SIZE
+// =====================================================
+
+setTimeout(function () {
+  map.invalidateSize(true);
+}, 300);
+
+window.addEventListener("resize", function () {
+  map.invalidateSize(true);
+});
+
+
+
 map.createPane('popupPane');
 map.getPane('popupPane').style.zIndex = 1200;
 
@@ -1390,9 +1522,257 @@ function distanceToPolyline(latlng, layer){
   const endpointsLayer = L.layerGroup();
 
   // ==== FETCH PUV ROUTES ====
-  fetch('https://script.google.com/macros/s/AKfycbzaTq47J2w99x2dgKOFMclV9UK9OOPNDPrKjwPFrsnnjuGXjqj3aBa-sNx0TNDEj4khpA/exec')
+fetch('https://script.google.com/macros/s/AKfycbyD38DhJFSdmWA2Ngv1hrSdYB9OvilQ1sfIh5xUDkGGepHcCeKTXtWzueeopbGzp-Qh4g/exec')
   .then(res => res.json())
   .then(data => {
+
+
+
+
+
+
+
+console.log("WEB APP RESPONSE:", data);
+
+
+
+
+
+
+
+
+
+// =====================================================
+// DISCUSSION DATA
+// =====================================================
+
+const discussionTopics = data.topics || [];
+
+
+// Keep the original data available to the filter
+window.topicRows = discussionTopics;
+
+
+
+
+
+
+
+
+
+// =====================================================
+// TEST: CHECK IF HTML RECEIVED BY TOPIC DATA
+// =====================================================
+
+console.log(
+  "HTML received BY TOPIC rows:",
+  discussionTopics.length
+);
+
+console.log(
+  "First BY TOPIC row:",
+  discussionTopics[0]
+);
+
+
+
+
+
+
+
+
+
+
+
+
+// =====================================================
+// HELPER FUNCTIONS
+// Accept different possible Google Sheet column names
+// =====================================================
+
+function getDiscussionValue(row) {
+
+  return String(
+    row["FOR DISCUSSION"] ??
+    row["For Discussion"] ??
+    row["for discussion"] ??
+    row.discussion ??
+    ""
+  ).trim();
+
+}
+
+
+function getParticularValue(row) {
+
+  return String(
+    row["PARTICULAR"] ??
+    row["Particular"] ??
+    row["particular"] ??
+    row.particular ??
+    ""
+  ).trim();
+
+}
+
+
+function getRouteValue(row) {
+
+  return String(
+    row["ROUTE"] ??
+    row["Route"] ??
+    row["route"] ??
+    row.route_name ??
+    ""
+  ).trim();
+
+}
+
+
+// =====================================================
+// BUILD FOR DISCUSSION DROPDOWN
+// =====================================================
+
+const discussionSelect =
+  document.getElementById("discussionSelect");
+
+
+// Remove any dynamically-created options first
+discussionSelect.innerHTML =
+  '<option value="">ALL</option>';
+
+
+const discussionValues = [
+  ...new Set(
+    discussionTopics
+      .map(row => getDiscussionValue(row))
+      .filter(value => value !== "")
+  )
+].sort();
+
+
+discussionValues.forEach(discussion => {
+
+  const option =
+    document.createElement("option");
+
+  option.value = discussion;
+  option.textContent = discussion;
+
+  discussionSelect.appendChild(option);
+
+});
+
+
+// ===== BUILD PARTICULARS FOR SELECTED DISCUSSION =====
+
+const particularSelect =
+  document.getElementById('particularSelect');
+
+function updateParticulars() {
+
+  // Clear old PARTICULARS
+  particularSelect.innerHTML = "";
+
+
+  const selectedDiscussion =
+    discussionSelect.value;
+
+
+  // Filter rows by FOR DISCUSSION
+  const filteredTopics =
+    selectedDiscussion
+
+      ? discussionTopics.filter(row =>
+          getDiscussionValue(row) ===
+          String(selectedDiscussion).trim()
+        )
+
+      : discussionTopics;
+
+
+  // Get unique PARTICULARS
+  const particularValues = [
+    ...new Set(
+      filteredTopics
+        .map(row => getParticularValue(row))
+        .filter(value => value !== "")
+    )
+  ].sort();
+
+
+  // Build PARTICULARS list
+  particularValues.forEach(particular => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = particular;
+    option.textContent = particular;
+
+    particularSelect.appendChild(option);
+
+  });
+
+}
+
+// Initial PARTICULARS list
+updateParticulars();
+
+// ===== WHEN FOR DISCUSSION CHANGES =====
+
+discussionSelect.addEventListener("change", function () {
+
+  // Reset diagnostic test
+  window._discussionTestShown = false;
+
+  // Rebuild PARTICULARS
+  updateParticulars();
+
+  // Apply map filter
+  toggleLayers();
+
+  // Update legend
+  updateLegendStats();
+
+});
+
+
+// ===== WHEN PARTICULARS CHANGES =====
+
+particularSelect.addEventListener("change", function () {
+
+  // Apply the particulars filter to the map
+  toggleLayers();
+
+  // Update legend totals
+  updateLegendStats();
+
+});
+
+
+// ===== CLEAR PARTICULARS =====
+
+document.getElementById("clearParticularBtn")
+  .addEventListener("click", function(){
+
+    const particularSelect =
+      document.getElementById("particularSelect");
+
+    // Clear all selected Particulars
+    Array.from(particularSelect.options)
+      .forEach(option => {
+        option.selected = false;
+      });
+
+    // Refresh the map and statistics
+    toggleLayers();
+    updateLegendStats();
+
+  });
+
+
+
     const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
 
 allRouteFeatures = validFeatures;
@@ -1552,12 +1932,32 @@ validFeatures.forEach(feature => {
   ] = routeColor;
 
   feature.properties.routeColor = routeColor;
-  feature.properties.routeWeight = 3; // same as initial style weight
-
+  feature.properties.routeWeight =
+    getRouteWeight(
+        feature.properties.deno,
+        map.getZoom()
+    );
 });
 
 buildRegionTable();
 
+
+const denoOrder = {
+  "PUJ": 1,
+  "UVE": 2,
+  "PUB": 3,
+  "Mini bus": 4,
+  "P2P": 5
+};
+
+validFeatures.sort((a, b) => {
+
+  const da = denoOrder[a.properties.deno] || 99;
+  const db = denoOrder[b.properties.deno] || 99;
+
+  return da - db;
+
+});
 
     routesLayer = L.geoJSON(validFeatures, {
 style: feature => ({
@@ -1565,7 +1965,10 @@ style: feature => ({
     feature.properties.deno,
     feature.properties.direction
   ),
-  weight: 3
+  weight: getRouteWeight(
+    feature.properties.deno,
+    map.getZoom()
+  )
 }),
 
       onEachFeature: (feature, layer) => {
@@ -1573,6 +1976,13 @@ style: feature => ({
         layer.options.pane = feature.properties.direction === "OD" ? "odPane" : "doPane";
 
         const p = feature.properties || {};
+
+
+
+console.log(p.deno, p.route_name);
+
+
+
 
 let highlightedLayers = [];
 
@@ -1842,6 +2252,7 @@ setTimeout(() => {
   if (el) el.addEventListener("change", toggleLayers);
 });
 
+
 // LEGEND CONTROLS (ADD THIS)
 [
   "PUJ_OD","PUJ_DO",
@@ -1890,14 +2301,61 @@ function updateLegendStats(){
 
   const counted = new Set();
 
-  allRouteFeatures.forEach(feature=>{
+allRouteFeatures.forEach(feature => {
 
-const p = feature.properties;
+  const p = feature.properties;
 
-const denoKey =
-  p.deno === "Mini bus"
-    ? "MINI"
-    : p.deno;
+
+  // =====================================================
+  // CURRENT DISCUSSION / PARTICULAR SELECTION
+  // =====================================================
+
+  const discussionSelect =
+    document.getElementById("discussionSelect");
+
+  const particularSelect =
+    document.getElementById("particularSelect");
+
+
+  const selectedDiscussion =
+    discussionSelect
+      ? discussionSelect.value
+      : "";
+
+
+  const selectedParticular =
+    particularSelect
+      ? particularSelect.value
+      : "";
+
+
+  // =====================================================
+  // CHECK WHETHER THIS ROUTE BELONGS TO THE SELECTION
+  // =====================================================
+
+  const discussionVisible =
+    isRouteInDiscussion(
+      p.route_name,
+      selectedDiscussion,
+      selectedParticular
+    );
+
+
+  // If this route is not part of the selected
+  // Discussion / Particular, don't count it.
+  if (!discussionVisible)
+    return;
+
+
+  // =====================================================
+  // VEHICLE TYPE
+  // =====================================================
+
+  const denoKey =
+    p.deno === "Mini bus"
+      ? "MINI"
+      : p.deno;
+
 
 const checkboxId =
   denoKey + "_" + p.direction;
@@ -1931,21 +2389,24 @@ if (checkbox && !checkbox.checked)
 
   });
 
-  Object.keys(stats).forEach(mode=>{
+Object.keys(stats).forEach(mode=>{
 
-    document.getElementById(
-      `stat_${mode}_routes`
-    ).textContent = stats[mode].routes;
+  document.getElementById(
+    `stat_${mode}_routes`
+  ).textContent =
+    stats[mode].routes.toLocaleString();
 
-    document.getElementById(
-      `stat_${mode}_fs`
-    ).textContent = stats[mode].fs;
+  document.getElementById(
+    `stat_${mode}_fs`
+  ).textContent =
+    stats[mode].fs.toLocaleString();
 
-    document.getElementById(
-      `stat_${mode}_nau`
-    ).textContent = stats[mode].nau;
+  document.getElementById(
+    `stat_${mode}_nau`
+  ).textContent =
+    stats[mode].nau.toLocaleString();
 
-  });
+});
 
   const totalRoutes =
     Object.values(stats)
@@ -1959,17 +2420,224 @@ if (checkbox && !checkbox.checked)
     Object.values(stats)
       .reduce((a,b)=>a+b.nau,0);
 
-  document.getElementById(
-    "stat_TOTAL_routes"
-  ).textContent = totalRoutes;
+document.getElementById(
+  "stat_TOTAL_routes"
+).textContent =
+  totalRoutes.toLocaleString();
 
-  document.getElementById(
-    "stat_TOTAL_fs"
-  ).textContent = totalFS;
+document.getElementById(
+  "stat_TOTAL_fs"
+).textContent =
+  totalFS.toLocaleString();
 
-  document.getElementById(
-    "stat_TOTAL_nau"
-  ).textContent = totalNAU;
+document.getElementById(
+  "stat_TOTAL_nau"
+).textContent =
+  totalNAU.toLocaleString();
+
+}
+
+
+function getRouteWeight(deno, zoom){
+
+  let base;
+
+  if (zoom >= 14) base = 4;
+  else if (zoom >= 12) base = 3;
+  else if (zoom >= 9) base = 2;
+  else base = 1;
+
+  switch(deno){
+
+    case "PUJ":
+      return base + 1.0;
+
+    case "UVE":
+      return base + 0.8;
+
+    case "Mini bus":
+      return base + 0.6;
+
+    case "PUB":
+      return base + 0.4;
+
+    case "P2P":
+      return base + 0.2;
+
+    default:
+      return base;
+
+  }
+
+}
+
+
+// =====================================================
+// FOR DISCUSSION MAP FILTER
+// =====================================================
+
+function normalizeTopicText(value) {
+
+  return String(value || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toUpperCase();
+
+}
+
+
+function isRouteInDiscussion(
+  routeName,
+  discussion,
+  selectedParticular
+) {
+
+// =====================================================
+// NO DISCUSSION SELECTED
+// =====================================================
+
+// If Discussion is ALL but a PARTICULAR is selected,
+// we still need to filter by PARTICULAR.
+
+if (!discussion) {
+
+  // No PARTICULAR selected = show everything
+  if (
+    !selectedParticular ||
+    selectedParticular === "ALL"
+  ) {
+    return true;
+  }
+
+  // PARTICULAR selected = check BY TOPIC
+  if (
+    !window.topicRows ||
+    !window.topicRows.length
+  ) {
+    return false;
+  }
+
+  const selectedParticularValue =
+    normalizeTopicText(
+      selectedParticular
+    );
+
+  const mapRoute =
+    normalizeTopicText(
+      routeName
+    );
+
+  return window.topicRows.some(row => {
+
+    const topicRoute =
+      normalizeTopicText(
+        row.route
+      );
+
+    const topicParticular =
+      normalizeTopicText(
+        row.particular
+      );
+
+    return (
+      topicRoute === mapRoute &&
+      topicParticular ===
+        selectedParticularValue
+    );
+
+  });
+
+}
+
+  // =====================================================
+  // TOPIC DATA NOT LOADED
+  // =====================================================
+
+  if (!window.topicRows || !window.topicRows.length) {
+    return false;
+  }
+
+
+  // =====================================================
+  // NORMALIZE VALUES
+  // =====================================================
+
+  const selectedDiscussion =
+    normalizeTopicText(discussion);
+
+  const selectedParticularValue =
+    normalizeTopicText(selectedParticular);
+
+  const mapRoute =
+    normalizeTopicText(routeName);
+
+
+  // =====================================================
+  // LOOK FOR A MATCHING BY TOPIC ROW
+  // =====================================================
+
+  return window.topicRows.some(row => {
+
+const topicDiscussion =
+  normalizeTopicText(
+    row.discussion
+  );
+
+const topicRoute =
+  normalizeTopicText(
+    row.route
+  );
+
+const topicParticular =
+  normalizeTopicText(
+    row.particular
+  );
+
+
+    // ---------------------------------------------------
+    // DISCUSSION MUST MATCH
+    // ---------------------------------------------------
+
+    if (
+      topicDiscussion !==
+      selectedDiscussion
+    ) {
+      return false;
+    }
+
+
+    // ---------------------------------------------------
+    // ROUTE MUST MATCH
+    // ---------------------------------------------------
+
+    if (
+      topicRoute !==
+      mapRoute
+    ) {
+      return false;
+    }
+
+
+    // ---------------------------------------------------
+    // NO PARTICULAR SELECTED
+    // SHOW ALL ROUTES FOR THIS DISCUSSION
+    // ---------------------------------------------------
+
+    if (!selectedParticularValue) {
+      return true;
+    }
+
+
+    // ---------------------------------------------------
+    // PARTICULAR MUST ALSO MATCH
+    // ---------------------------------------------------
+
+    return (
+      topicParticular ===
+      selectedParticularValue
+    );
+
+  });
 
 }
 
@@ -2017,11 +2685,71 @@ function toggleLayers() {
       const legendVisible =
         legend[legendKey] ?? true;
 
-      const visible =
-        dirVisible &&
-        legendVisible;
+const discussionSelect =
+  document.getElementById("discussionSelect");
 
-layer._visible = visible;
+const particularSelect =
+  document.getElementById("particularSelect");
+
+const selectedDiscussion =
+  discussionSelect ? discussionSelect.value : "";
+
+const selectedParticular =
+  particularSelect
+    ? particularSelect.value
+    : "";
+
+const discussionVisible =
+  isRouteInDiscussion(
+    p.route_name,
+    selectedDiscussion,
+    selectedParticular
+  );
+
+
+if (
+  selectedDiscussion &&
+  window._discussionTestShown !== true
+) {
+
+  console.log(
+    "===== DISCUSSION FILTER TEST ====="
+  );
+
+  console.log(
+    "Selected Discussion:",
+    selectedDiscussion
+  );
+
+  console.log(
+    "Selected Particular:",
+    selectedParticular
+  );
+
+  console.log(
+    "First Map Route:",
+    p.route_name
+  );
+
+  console.log(
+    "First Route Match Result:",
+    discussionVisible
+  );
+
+  console.log(
+    "BY TOPIC rows:",
+    window.topicRows
+  );
+
+  window._discussionTestShown = true;
+
+}
+
+
+const visible =
+  dirVisible &&
+  legendVisible &&
+  discussionVisible;
 
 layer._visible = visible;
 
@@ -2300,7 +3028,20 @@ obj.sleeper.setZIndexOffset?.(1000);
   if (routesLayer) {
     routesLayer.eachLayer(layer => {
       if (!layer._isSelected) {
-        layer.setStyle({ weight: routeWeight });
+layer.setStyle({
+    weight: getRouteWeight(
+        layer.feature.properties.deno,
+        zoom
+    )
+});
+
+layer.feature.properties.routeWeight =
+    getRouteWeight(
+        layer.feature.properties.deno,
+        zoom
+    );
+
+
       }
     });
   }
@@ -2683,30 +3424,55 @@ align="right">
 }
 
 
-document.addEventListener(
-"click",
-function(){
+// =====================================================
+// OPEN / CLOSE REGION PANEL
+// =====================================================
 
-const btn =
-document.getElementById(
-"openRegionPanel"
-);
+const regionBtn =
+  document.getElementById("openRegionPanel");
 
-const panel =
-document.getElementById(
-"regionPanel"
-);
+const regionPanel =
+  document.getElementById("regionPanel");
 
-btn.onclick = function(){
+if (regionBtn && regionPanel) {
 
-panel.style.display =
-panel.style.display === "block"
-? "none"
-: "block";
+  regionBtn.addEventListener("click", function () {
 
-};
+    regionPanel.style.display =
+      regionPanel.style.display === "block"
+        ? "none"
+        : "block";
 
-});
+  });
+
+}
+
+
+// =====================================================
+// OPEN / CLOSE FOR DISCUSSION PANEL
+// =====================================================
+
+const discussionBtn =
+  document.getElementById("openDiscussionPanel");
+
+const discussionPanel =
+  document.getElementById("discussionPanel");
+
+if (discussionBtn && discussionPanel) {
+
+  discussionBtn.addEventListener("click", function () {
+
+    const isHidden =
+      window.getComputedStyle(
+        discussionPanel
+      ).display === "none";
+
+    discussionPanel.style.display =
+      isHidden ? "block" : "none";
+
+  });
+
+}
 
 
 </script>
