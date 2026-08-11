@@ -639,230 +639,346 @@
     </div>
   </div>
 
-  <!-- ===================== -->
-  <!-- BOX 1: LEGEND -->
-  <!-- ===================== -->
-  <div class="panel-box">
+<!-- ===================== -->
+<!-- BOX 1: LEGEND -->
+<!-- ===================== -->
+<div class="panel-box">
 
-    <div class="legend-title">LEGEND</div>
+  <div class="legend-title">LEGEND</div>
 
-<div style="
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-font-size:11px;
-font-weight:bold;
-margin-bottom:6px;
-padding:0 4px;
-">
-  <div>Mode</div>
-  <div style="text-align:right;">Routes</div>
-  <div style="text-align:right;">FS</div>
-  <div style="text-align:right;">NAU</div>
-</div>
-
-<!-- PUJ -->
-<div style="
-background:#f3f3f3;
-padding:4px 8px;
-border-radius:4px;
-font-weight:bold;
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-margin-bottom:2px;
-">
-  <div>PUJ</div>
-  <div id="stat_PUJ_routes" style="text-align:right;">0</div>
-  <div id="stat_PUJ_fs" style="text-align:right;">0</div>
-  <div id="stat_PUJ_nau" style="text-align:right;">0</div>
-</div>
-
-<div style="
-display:flex;
-gap:16px;
-padding-left:8px;
-margin-bottom:2px;
-">
-
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="PUJ_OD" checked>
-  <span class="legend-line" style="background:#00FFFF;"></span>
-  OD
-</label>
-
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="PUJ_DO" checked>
-  <span class="legend-line" style="background:#0088FF;"></span>
-  DO
-</label>
-
-</div>
+  <!-- LEGEND HEADER -->
+  <div style="
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+    font-size:11px;
+    font-weight:bold;
+    margin-bottom:6px;
+    padding:0 4px;
+  ">
+    <div>Mode</div>
+    <div style="text-align:right;">Routes</div>
+    <div style="text-align:right;">FS</div>
+    <div style="text-align:right;">NAU</div>
+  </div>
 
 
-<!-- UVE -->
-<div style="
-background:#f3f3f3;
-padding:4px 8px;
-border-radius:4px;
-font-weight:bold;
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-margin-top:6px;
-margin-bottom:2px;
-">
-  <div>UVE</div>
-  <div id="stat_UVE_routes" style="text-align:right;">0</div>
-  <div id="stat_UVE_fs" style="text-align:right;">0</div>
-  <div id="stat_UVE_nau" style="text-align:right;">0</div>
-</div>
+  <!-- ================= PUJ ================= -->
 
-<div style="
-display:flex;
-gap:16px;
-padding-left:8px;
-margin-bottom:2px;
-">
+  <div style="
+    background:#f3f3f3;
+    padding:4px 8px;
+    border-radius:4px;
+    margin-bottom:4px;
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+  ">
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="UVE_OD" checked>
-  <span class="legend-line" style="background:#FF00FF;"></span>
-  OD
-</label>
+    <!-- MODE + OD/DO -->
+    <div style="
+      display:grid;
+      grid-template-columns:45px 1fr;
+      grid-template-rows:auto auto;
+      align-items:center;
+    ">
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="UVE_DO" checked>
-  <span class="legend-line" style="background:#B000FF;"></span>
-  DO
-</label>
+      <div style="
+        grid-row:1 / span 2;
+        font-weight:bold;
+      ">
+        PUJ
+      </div>
 
-</div>
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="PUJ_OD" checked>
+        <span class="legend-line" style="background:#00FFFF;"></span>
+        OD
+      </label>
 
-<!-- MB -->
-<div style="
-background:#f3f3f3;
-padding:4px 8px;
-border-radius:4px;
-font-weight:bold;
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-margin-top:6px;
-margin-bottom:2px;
-">
-  <div>MB</div>
-  <div id="stat_MINI_routes" style="text-align:right;">0</div>
-  <div id="stat_MINI_fs" style="text-align:right;">0</div>
-  <div id="stat_MINI_nau" style="text-align:right;">0</div>
-</div>
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="PUJ_DO" checked>
+        <span class="legend-line" style="background:#0088FF;"></span>
+        DO
+      </label>
 
-<div style="
-display:flex;
-gap:16px;
-padding-left:8px;
-margin-bottom:2px;
-">
+    </div>
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="MINI_OD" checked>
-  <span class="legend-line" style="background:#00FF66;"></span>
-  OD
-</label>
+    <!-- NUMBERS -->
+    <div id="stat_PUJ_routes"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="MINI_DO" checked>
-  <span class="legend-line" style="background:#00AA44;"></span>
-  DO
-</label>
+    <div id="stat_PUJ_fs"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
 
-</div>
+    <div id="stat_PUJ_nau"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
 
-<!-- PUB -->
-<div style="
-background:#f3f3f3;
-padding:4px 8px;
-border-radius:4px;
-font-weight:bold;
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-margin-top:6px;
-margin-bottom:2px;
-">
-  <div>PUB</div>
-  <div id="stat_PUB_routes" style="text-align:right;">0</div>
-  <div id="stat_PUB_fs" style="text-align:right;">0</div>
-  <div id="stat_PUB_nau" style="text-align:right;">0</div>
-</div>
+  </div>
 
-<div style="
-display:flex;
-gap:16px;
-padding-left:8px;
-margin-bottom:2px;
-">
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="PUB_OD" checked>
-  <span class="legend-line" style="background:#FFD700;"></span>
-  OD
-</label>
+  <!-- ================= UVE ================= -->
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="PUB_DO" checked>
-  <span class="legend-line" style="background:#FF8C00;"></span>
-  DO
-</label>
+  <div style="
+    background:#f3f3f3;
+    padding:4px 8px;
+    border-radius:4px;
+    margin-bottom:4px;
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+  ">
 
-</div>
+    <div style="
+      display:grid;
+      grid-template-columns:45px 1fr;
+      grid-template-rows:auto auto;
+      align-items:center;
+    ">
 
-<!-- P2P -->
-<div style="
-background:#f3f3f3;
-padding:4px 8px;
-border-radius:4px;
-font-weight:bold;
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-margin-top:6px;
-margin-bottom:2px;
-">
-  <div>P2P</div>
-  <div id="stat_P2P_routes" style="text-align:right;">0</div>
-  <div id="stat_P2P_fs" style="text-align:right;">0</div>
-  <div id="stat_P2P_nau" style="text-align:right;">0</div>
-</div>
+      <div style="
+        grid-row:1 / span 2;
+        font-weight:bold;
+      ">
+        UVE
+      </div>
 
-<div style="
-display:flex;
-gap:16px;
-padding-left:8px;
-margin-bottom:2px;
-">
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="UVE_OD" checked>
+        <span class="legend-line" style="background:#FF00FF;"></span>
+        OD
+      </label>
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="P2P_OD" checked>
-  <span class="legend-line" style="background:#FF4444;"></span>
-  OD
-</label>
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="UVE_DO" checked>
+        <span class="legend-line" style="background:#B000FF;"></span>
+        DO
+      </label>
 
-<label class="legend-item" style="margin:0;">
-  <input type="checkbox" id="P2P_DO" checked>
-  <span class="legend-line" style="background:#800000;"></span>
-  DO
-</label>
+    </div>
 
-</div>
+    <div id="stat_UVE_routes"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
 
-<hr>
+    <div id="stat_UVE_fs"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
 
-<div style="
-display:grid;
-grid-template-columns:1fr 65px 75px 90px;
-font-weight:bold;
-padding:0 4px;
-">
-  <div>TOTAL</div>
-  <div id="stat_TOTAL_routes" style="text-align:right;">0</div>
-  <div id="stat_TOTAL_fs" style="text-align:right;">0</div>
-  <div id="stat_TOTAL_nau" style="text-align:right;">0</div>
-</div>
+    <div id="stat_UVE_nau"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+  </div>
+
+
+  <!-- ================= MB ================= -->
+
+  <div style="
+    background:#f3f3f3;
+    padding:4px 8px;
+    border-radius:4px;
+    margin-bottom:4px;
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+  ">
+
+    <div style="
+      display:grid;
+      grid-template-columns:45px 1fr;
+      grid-template-rows:auto auto;
+      align-items:center;
+    ">
+
+      <div style="
+        grid-row:1 / span 2;
+        font-weight:bold;
+      ">
+        MB
+      </div>
+
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="MINI_OD" checked>
+        <span class="legend-line" style="background:#00FF66;"></span>
+        OD
+      </label>
+
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="MINI_DO" checked>
+        <span class="legend-line" style="background:#00AA44;"></span>
+        DO
+      </label>
+
+    </div>
+
+    <div id="stat_MINI_routes"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+    <div id="stat_MINI_fs"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+    <div id="stat_MINI_nau"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+  </div>
+
+
+  <!-- ================= PUB ================= -->
+
+  <div style="
+    background:#f3f3f3;
+    padding:4px 8px;
+    border-radius:4px;
+    margin-bottom:4px;
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+  ">
+
+    <div style="
+      display:grid;
+      grid-template-columns:45px 1fr;
+      grid-template-rows:auto auto;
+      align-items:center;
+    ">
+
+      <div style="
+        grid-row:1 / span 2;
+        font-weight:bold;
+      ">
+        PUB
+      </div>
+
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="PUB_OD" checked>
+        <span class="legend-line" style="background:#FFD700;"></span>
+        OD
+      </label>
+
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="PUB_DO" checked>
+        <span class="legend-line" style="background:#FF8C00;"></span>
+        DO
+      </label>
+
+    </div>
+
+    <div id="stat_PUB_routes"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+    <div id="stat_PUB_fs"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+    <div id="stat_PUB_nau"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+  </div>
+
+
+  <!-- ================= P2P ================= -->
+
+  <div style="
+    background:#f3f3f3;
+    padding:4px 8px;
+    border-radius:4px;
+    margin-bottom:4px;
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+  ">
+
+    <div style="
+      display:grid;
+      grid-template-columns:45px 1fr;
+      grid-template-rows:auto auto;
+      align-items:center;
+    ">
+
+      <div style="
+        grid-row:1 / span 2;
+        font-weight:bold;
+      ">
+        P2P
+      </div>
+
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="P2P_OD" checked>
+        <span class="legend-line" style="background:#FF4444;"></span>
+        OD
+      </label>
+
+      <label class="legend-item" style="margin:0;">
+        <input type="checkbox" id="P2P_DO" checked>
+        <span class="legend-line" style="background:#800000;"></span>
+        DO
+      </label>
+
+    </div>
+
+    <div id="stat_P2P_routes"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+    <div id="stat_P2P_fs"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+    <div id="stat_P2P_nau"
+         style="text-align:right; align-self:start; font-weight:bold;">
+      0
+    </div>
+
+  </div>
+
+
+  <!-- ================= TOTAL ================= -->
+
+  <hr>
+
+  <div style="
+    display:grid;
+    grid-template-columns:1fr 55px 55px 75px;
+    font-weight:bold;
+    padding:0 4px;
+  ">
+
+    <div>TOTAL</div>
+
+    <div id="stat_TOTAL_routes"
+         style="text-align:right;">
+      0
+    </div>
+
+    <div id="stat_TOTAL_fs"
+         style="text-align:right;">
+      0
+    </div>
+
+    <div id="stat_TOTAL_nau"
+         style="text-align:right;">
+      0
+    </div>
+
+  </div>
+
 </div> <!-- END LEGEND BOX -->
 
   <!-- ===================== -->
