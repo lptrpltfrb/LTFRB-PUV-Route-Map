@@ -1638,24 +1638,9 @@ function distanceToPolyline(latlng, layer){
   const endpointsLayer = L.layerGroup();
 
   // ==== FETCH PUV ROUTES ====
-fetch('https://script.google.com/macros/s/AKfycbyD38DhJFSdmWA2Ngv1hrSdYB9OvilQ1sfIh5xUDkGGepHcCeKTXtWzueeopbGzp-Qh4g/exec')
+fetch('https://script.google.com/macros/s/AKfycbxvDpb5DfG169VJrgXk365uZogvOm-8KFl85txBgeIRTyPvvgeJ_X3eEmFvcfaV0qlVjg/exec')
   .then(res => res.json())
   .then(data => {
-
-
-
-
-
-
-
-console.log("WEB APP RESPONSE:", data);
-
-
-
-
-
-
-
 
 
 // =====================================================
@@ -1667,37 +1652,6 @@ const discussionTopics = data.topics || [];
 
 // Keep the original data available to the filter
 window.topicRows = discussionTopics;
-
-
-
-
-
-
-
-
-
-// =====================================================
-// TEST: CHECK IF HTML RECEIVED BY TOPIC DATA
-// =====================================================
-
-console.log(
-  "HTML received BY TOPIC rows:",
-  discussionTopics.length
-);
-
-console.log(
-  "First BY TOPIC row:",
-  discussionTopics[0]
-);
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3354,10 +3308,11 @@ const html = `
   <b>CLASS:</b> ${p.class || ''}<br>
   <b>ROUTE TYPE:</b> ${p.route_study || ''}<br>
   <b>ROUTE CLASS:</b> ${p.route_class || ''}<br>
-  <b>FLEET SIZE:</b> ${p.authorized_units || ''}<br>
+  <b>FLEET SIZE:</b> ${p.fleet_size || ''}<br>
+  <b>AUTHORIZED UNITS:</b> ${p.authorized_units || ''}<br>
   <b>LENGTH:</b> ${p.route_length || ''} km<br>
-  <b>BR NO:</b> ${p.board_reso || ''}<br>
-  <b>MC NO:</b> ${p.mc_no || ''}
+  <b>BR. NO.:</b> ${p.board_reso || ''}<br>
+  <b>MC. NO.:</b> ${p.mc_no || ''}
 `;
 
 document.getElementById('route-detail-panel').style.display = 'block';
