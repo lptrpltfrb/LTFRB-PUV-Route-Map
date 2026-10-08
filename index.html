@@ -513,6 +513,15 @@
   margin:6px 0;
 }
 
+.facility-control-icon{
+  width:22px;height:22px;min-width:22px;
+  border:2px solid #fff;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+  box-sizing:border-box;
+}
+.facility-control-icon svg{width:14px;height:14px;display:block;}
+
 #display-controls label{
   cursor:pointer;
 }
@@ -617,7 +626,7 @@
 }
 
 
-  .facility-control-icon{width:18px;height:18px;min-width:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;box-sizing:border-box;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,.25)}.facility-control-icon svg{width:12px;height:12px;display:block}</style>
+  </style>
 </head>
 
 <body>
@@ -1031,9 +1040,24 @@
 
   <div class="panel-section">Other Transportation</div>
 
-  <label class="legend-control"><input type="checkbox" id="rail" checked><span class="facility-control-icon" style="background:#EF6C00"><svg viewBox="0 0 24 24"><path fill="#fff" d="M6 3h12a2 2 0 0 1 2 2v10a4 4 0 0 1-4 4l2 2h-3l-2-2h-4l-2 2H4l2-2a4 4 0 0 1-2-4V5a2 2 0 0 1 2-2zm1 3v6h10V6H7zm2 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg></span>Railways</label>
-  <label class="legend-control"><input type="checkbox" id="airports" checked><span class="facility-control-icon" style="background:#1976D2"><svg viewBox="0 0 24 24"><path fill="#fff" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V20l-2 1.5V23l3.5-1 3.5 1v-1.5L13 20v-6.5L21 16z"/></svg></span>Airports</label>
-  <label class="legend-control"><input type="checkbox" id="seaports" checked><span class="facility-control-icon" style="background:#00897B"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 2a2 2 0 0 0-2 2v1H8v2h2v5.3l-4.7 1.8C4.5 14.4 4 15.2 4 16v1h16v-1c0-.8-.5-1.6-1.3-1.9L14 12.3V7h2V5h-2V4a2 2 0 0 0-2-2zm-5 17c1.4 1 3 1.5 5 1.5s3.6-.5 5-1.5c1.2.9 2.5 1.3 4 1.3V23c-1.7 0-3.2-.5-4.6-1.4C15.1 22.5 13.7 23 12 23s-3.1-.5-4.4-1.4C6.2 22.5 4.7 23 3 23v-2.7c1.5 0 2.8-.4 4-1.3z"/></svg></span>Seaports</label>
+  <label class="legend-control">
+    <input type="checkbox" id="rail" checked>
+    <span class="legend-sample rail"></span>
+    <span class="facility-control-icon" style="background:#EF6C00;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M4 17h16v2H4zM6 15V7h2v8H6zm5 0V5h2v10h-2zm5 0V7h2v8h-2zM5 4h14v2H5z"/></svg></span>
+    Railways / Stations
+  </label>
+
+  <label class="legend-control">
+    <input type="checkbox" id="airports" checked>
+    <span class="facility-control-icon" style="background:#1976D2;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M21 16.5 13.5 12V5.5a1.5 1.5 0 0 0-3 0V12L3 16.5v2l7.5-2.2V20l-2 1.5V23l3.5-1 3.5 1v-1.5l-2-1.5v-3.7l7.5 2.2z"/></svg></span>
+    Airports
+  </label>
+
+  <label class="legend-control">
+    <input type="checkbox" id="seaports" checked>
+    <span class="facility-control-icon" style="background:#00897B;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M12 2 9.5 6h5zM11 7h2v8h-2zM5 14l7-3 7 3v4c-1.2 1-2.5 1.5-4 1.5S12.2 19 12 18c-.2 1-1.5 1.5-3 1.5S6.2 19 5 18zm0 5c1.2 1 2.5 1.5 4 1.5S11.8 20 12 19c.2 1 1.5 1.5 3 1.5s2.8-.5 4-1.5v2c-1.2 1-2.5 1.5-4 1.5S12.2 22 12 21c-.2 1-1.5 1.5-3 1.5S6.2 22 5 21z"/></svg></span>
+    Seaports
+  </label>
 
 </div>
 
@@ -1532,6 +1556,10 @@ setTimeout(() => {
   const trainLayer = L.layerGroup().addTo(map);
   const railGroup = L.layerGroup().addTo(map);
 
+  // ===== AIRPORTS + SEAPORTS =====
+  const airportsLayer = L.layerGroup();
+  const seaportsLayer = L.layerGroup();
+
   map.on('click', function(){
 
 clickedLayers = [];
@@ -1634,8 +1662,6 @@ function distanceToPolyline(latlng, layer){
   const trainStations = L.layerGroup();
   const stopsLayer = L.layerGroup();
   const endpointsLayer = L.layerGroup();
-  const airportsLayer = L.layerGroup();
-  const seaportsLayer = L.layerGroup();
 
   // ==== FETCH PUV ROUTES ====
 fetch('https://script.google.com/macros/s/AKfycbyACAb_80cfCbRPnvECQd4CYupJs--1BBwFVqaBezOM3OB-MSFaqxMENpzcw9vkB_sjBA/exec')
@@ -1843,7 +1869,51 @@ document.getElementById("clearParticularBtn")
 
 
 
-    const validFeatures = data.features.filter(f => f.geometry && f.geometry.coordinates && f.geometry.coordinates.length > 0);
+    // =====================================================
+    // NORMALIZE / VALIDATE ROUTE GEOMETRIES
+    // Some source rows can declare LineString while carrying
+    // nested coordinates that are actually MultiLineString-like.
+    // Normalize those rows so one bad geometry cannot break the map.
+    // =====================================================
+    function normalizeRouteFeature(feature) {
+      if (!feature || !feature.geometry) return null;
+
+      const g = feature.geometry;
+      const isPair = c => Array.isArray(c) && c.length >= 2 &&
+        Number.isFinite(Number(c[0])) && Number.isFinite(Number(c[1]));
+      const isLine = line => Array.isArray(line) && line.length >= 2 &&
+        line.every(isPair);
+
+      if (g.type === "LineString") {
+        if (isLine(g.coordinates)) return feature;
+
+        // Handle a LineString that actually contains multiple line arrays.
+        if (Array.isArray(g.coordinates) && g.coordinates.length &&
+            g.coordinates.every(isLine)) {
+          return {
+            ...feature,
+            geometry: { ...g, type: "MultiLineString" }
+          };
+        }
+        return null;
+      }
+
+      if (g.type === "MultiLineString") {
+        if (Array.isArray(g.coordinates) && g.coordinates.some(isLine)) {
+          const lines = g.coordinates.filter(isLine);
+          if (lines.length) {
+            return { ...feature, geometry: { ...g, coordinates: lines } };
+          }
+        }
+        return null;
+      }
+
+      return null;
+    }
+
+    const validFeatures = (Array.isArray(data.features) ? data.features : [])
+      .map(normalizeRouteFeature)
+      .filter(Boolean);
 
 allRouteFeatures = validFeatures;
 
@@ -2029,7 +2099,7 @@ validFeatures.sort((a, b) => {
 
 });
 
-    routesLayer = L.geoJSON(validFeatures, {
+    routesLayer = L.geoJSON(null, {
 style: feature => ({
   color: getRouteColor(
     feature.properties.deno,
@@ -2304,20 +2374,34 @@ layer._decorator = decorator;
       }
     }).addTo(map);
 
-setTimeout(() => {
+    // Add routes in small batches so the browser gets time to render
+    // instead of freezing while Leaflet creates every route at once.
+    const ROUTE_BATCH_SIZE = 75;
+    let routeIndex = 0;
 
-  updateLegendStats();
+    function addNextRouteBatch() {
+      const end = Math.min(routeIndex + ROUTE_BATCH_SIZE, validFeatures.length);
+      if (routeIndex < end) {
+        routesLayer.addData(validFeatures.slice(routeIndex, end));
+        routeIndex = end;
+      }
 
-  map.fire('zoomend');
+      if (routeIndex < validFeatures.length) {
+        setTimeout(addNextRouteBatch, 0);
+      } else {
+        updateLegendStats();
+        map.fire('zoomend');
+      }
+    }
 
-}, 300);
+    addNextRouteBatch();
 
 
   })
   .catch(err => { console.error(err); alert("Failed to load PUV route data"); });
 
 // DISPLAY CONTROLS
-["od","do","arrows","endpoints","stops","rail","airports","seaports"].forEach(id=>{
+["od","do","arrows","endpoints","stops","rail"].forEach(id=>{
   const el = document.getElementById(id);
   if (el) el.addEventListener("change", toggleLayers);
 });
@@ -2721,8 +2805,6 @@ function toggleLayers() {
   const showEndpoints = document.getElementById("endpoints").checked;
   const showStops = document.getElementById("stops").checked;
   const showRailways = document.getElementById("rail").checked;
-  const showAirports = document.getElementById("airports").checked;
-  const showSeaports = document.getElementById("seaports").checked;
 
   const zoom = map.getZoom();
 
@@ -2934,8 +3016,10 @@ if (visible) {
 
     map.addLayer(railGroup);
 
-    if (zoom >= 10)
+    if (zoom >= 14)
       map.addLayer(trainStations);
+    else
+      map.removeLayer(trainStations);
 
   } else {
 
@@ -2944,32 +3028,122 @@ if (visible) {
 
   }
 
-  if (showAirports && zoom >= 10) map.addLayer(airportsLayer);
-  else map.removeLayer(airportsLayer);
-  if (showSeaports && zoom >= 10) map.addLayer(seaportsLayer);
-  else map.removeLayer(seaportsLayer);
+  // =====================
+  // AIRPORTS
+  // =====================
+  const showAirports =
+    document.getElementById("airports")?.checked ?? true;
+
+  if (showAirports && zoom >= 10)
+    map.addLayer(airportsLayer);
+  else
+    map.removeLayer(airportsLayer);
+
+  // =====================
+  // SEAPORTS
+  // =====================
+  const showSeaports =
+    document.getElementById("seaports")?.checked ?? true;
+
+  if (showSeaports && zoom >= 10)
+    map.addLayer(seaportsLayer);
+  else
+    map.removeLayer(seaportsLayer);
 }
 
   // ==== TRANSPORT FACILITY ICONS ====
-  function getFacilitySize(z){ return z>=16?18:z>=15?16:z>=14?14:z>=13?12:z>=12?10:z>=11?9:z>=10?8:z>=9?7:6; }
-  function getFacilityMarkerIcon(kind,z){
-    const size=getFacilitySize(z), ms=Math.max(22,Math.round(size*1.5)), o=ms+4;
-    const icons={
-      station:['#EF6C00','<path fill="#fff" d="M6 3h12a2 2 0 0 1 2 2v10a4 4 0 0 1-4 4l2 2h-3l-2-2h-4l-2 2H4l2-2a4 4 0 0 1-2-4V5a2 2 0 0 1 2-2zm1 3v6h10V6H7zm2 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>'],
-      airport:['#1976D2','<path fill="#fff" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V20l-2 1.5V23l3.5-1 3.5 1v-1.5L13 20v-6.5L21 16z"/>'],
-      seaport:['#00897B','<path fill="#fff" d="M12 2a2 2 0 0 0-2 2v1H8v2h2v5.3l-4.7 1.8C4.5 14.4 4 15.2 4 16v1h16v-1c0-.8-.5-1.6-1.3-1.9L14 12.3V7h2V5h-2V4a2 2 0 0 0-2-2zm-5 17c1.4 1 3 1.5 5 1.5s3.6-.5 5-1.5c1.2.9 2.5 1.3 4 1.3V23c-1.7 0-3.2-.5-4.6-1.4C15.1 22.5 13.7 23 12 23s-3.1-.5-4.4-1.4C6.2 22.5 4.7 23 3 23v-2.7c1.5 0 2.8-.4 4-1.3z"/>']};
-    const x=icons[kind]||icons.station;
-    return L.divIcon({className:'facility-marker',html:`<div style="background:${x[0]};border:2px solid #fff;border-radius:50%;width:${ms}px;height:${ms}px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px #555"><svg viewBox="0 0 24 24" style="width:${Math.max(12,size)}px;height:${Math.max(12,size)}px">${x[1]}</svg></div>`,iconSize:[o,o],iconAnchor:[o/2,o/2]});
+  // Visibility:
+  //   Railway stations: zoom 14+
+  //   Airports:          zoom 10+
+  //   Seaports:          zoom 10+
+  // Icons scale up as the map is zoomed in.
+  function getFacilitySize(zoom) {
+    if (zoom >= 17) return 28;
+    if (zoom >= 15) return 24;
+    if (zoom >= 13) return 20;
+    if (zoom >= 11) return 17;
+    return 14;
   }
-  function getTrainIcon(z){ return getFacilityMarkerIcon('station',z); }
 
-  // ==== TRAIN LINES + STATIONS ====
+  function getFacilityMarkerIcon(kind, zoom) {
+    const size = getFacilitySize(zoom);
+    const outer = size + 8;
+    const colors = {
+      station: "#EF6C00",
+      airport: "#1976D2",
+      seaport: "#00897B"
+    };
 
-  fetch('https://script.google.com/macros/s/AKfycbzhvO85r4Tm-YWwuoqFs_Ix2J7xLdZpgdmq63f5ygMcndNPhfUQll7himaplxUHeOaSqw/exec')
-  .then(res => res.json())
+    const icons = {
+      station: '<path fill="white" d="M4 17h16v2H4zM6 15V7h2v8H6zm5 0V5h2v10h-2zm5 0V7h2v8h-2zM5 4h14v2H5z"/>',
+      airport: '<path fill="white" d="M21 16.5 13.5 12V5.5a1.5 1.5 0 0 0-3 0V12L3 16.5v2l7.5-2.2V20l-2 1.5V23l3.5-1 3.5 1v-1.5l-2-1.5v-3.7l7.5 2.2z"/>',
+      seaport: '<path fill="white" d="M12 2 9.5 6h5zM11 7h2v8h-2zM5 14l7-3 7 3v4c-1.2 1-2.5 1.5-4 1.5S12.2 19 12 18c-.2 1-1.5 1.5-3 1.5S6.2 19 5 18zm0 5c1.2 1 2.5 1.5 4 1.5S11.8 20 12 19c.2 1 1.5 1.5 3 1.5s2.8-.5 4-1.5v2c-1.2 1-2.5 1.5-4 1.5S12.2 22 12 21c-.2 1-1.5 1.5-3 1.5S6.2 22 5 21z"/>'
+    };
+
+    return L.divIcon({
+      className: "facility-marker",
+      html: `<div style="background:${colors[kind]};border:2px solid #fff;border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.45);"><svg viewBox="0 0 24 24" style="width:${Math.max(11,size-4)}px;height:${Math.max(11,size-4)}px;">${icons[kind]}</svg></div>`,
+      iconSize: [outer, outer],
+      iconAnchor: [outer/2, outer/2]
+    });
+  }
+
+  function getTrainIcon(zoom) {
+    return getFacilityMarkerIcon("station", zoom);
+  }
+
+  // ==== AIRPORTS + SEAPORTS ====
+  fetch("https://script.google.com/macros/s/AKfycbwaj41qEO6DFV_fXSDWm1CP3hG0RZags9m3qV1QaKKf7EeM_Eb3tY-IDmrHqwJx0H5B9w/exec")
+    .then(res => res.json())
+    .then(data => {
+      (data.features || []).forEach(feature => {
+        const p = feature.properties || {};
+        const c = feature.geometry && feature.geometry.coordinates;
+        if (!Array.isArray(c) || c.length < 2) return;
+
+        const lat = Number(c[1]);
+        const lon = Number(c[0]);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+
+        const kind =
+          String(p.category || "").toLowerCase() === "airports"
+            ? "airport"
+            : "seaport";
+
+        const marker = L.marker([lat, lon], {
+          icon: getFacilityMarkerIcon(kind, map.getZoom())
+        });
+
+        marker.bindPopup(
+          p.name || (kind === "airport" ? "Airport" : "Seaport")
+        );
+
+        (kind === "airport" ? airportsLayer : seaportsLayer)
+          .addLayer(marker);
+      });
+
+      toggleLayers();
+    })
+    .catch(err => console.error("AIRPORTS/SEAPORTS ERROR:", err));
+
+  fetch('https://script.google.com/macros/s/AKfycbwMZDfBZzuke-x2Sph6IXMwB4-b6jNPv5nY3Gut-7lb1i1z9tOAFLVxVXN5CRQjOKuL5Q/exec')
+  .then(async res => {
+    if (!res.ok) throw new Error(`Railway API HTTP ${res.status}`);
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch (e) { throw new Error('Railway API did not return valid JSON'); }
+  })
   .then(data => {
 
-    data.features.forEach(feature => {
+    const railwayFeatures = Array.isArray(data.features) ? data.features : [];
+    let railwayIndex = 0;
+    const RAILWAY_BATCH_SIZE = 50;
+
+    function processRailwayBatch() {
+      const end = Math.min(railwayIndex + RAILWAY_BATCH_SIZE, railwayFeatures.length);
+
+      for (; railwayIndex < end; railwayIndex++) {
+        const feature = railwayFeatures[railwayIndex];
 if (feature.properties.type === "LINE") {
 
   let lines = [];
@@ -3012,11 +3186,19 @@ trainTracks.push({
         marker.bindPopup(feature.properties.station + " Sta.");
         trainStations.addLayer(marker);
       }
-    });
-    map.addLayer(trainLayer);
+      }
 
-    railwayReady = true;
-    map.fire('zoomend');
+      if (railwayIndex < railwayFeatures.length) {
+        setTimeout(processRailwayBatch, 0);
+        return;
+      }
+
+      map.addLayer(trainLayer);
+      railwayReady = true;
+      map.fire('zoomend');
+    }
+
+    processRailwayBatch();
 
   })
   .catch(err=>console.error("TRAIN DATA ERROR:",err));
@@ -3024,18 +3206,6 @@ trainTracks.push({
 const forceSleeperVisibility = () => {
 };
 
-// ==== AIRPORTS + SEAPORTS ====
-fetch("https://script.google.com/macros/s/AKfycbwaj41qEO6DFV_fXSDWm1CP3hG0RZags9m3qV1QaKKf7EeM_Eb3tY-IDmrHqwJx0H5B9w/exec")
-.then(res=>res.json()).then(data=>{
-  (data.features||[]).forEach(feature=>{
-    const c=feature.geometry.coordinates, p=feature.properties||{};
-    const kind=String(p.category||'').toLowerCase()==='airports'?'airport':'seaport';
-    const m=L.marker([c[1],c[0]],{icon:getFacilityMarkerIcon(kind,map.getZoom())});
-    m.bindPopup(p.name||(kind==='airport'?'Airport':'Seaport'));
-    (kind==='airport'?airportsLayer:seaportsLayer).addLayer(m);
-  });
-  toggleLayers();
-}).catch(err=>console.error("FACILITY DATA ERROR:",err));
 
 map.on('zoomend', () => {
   const zoom = map.getZoom();
@@ -3144,11 +3314,18 @@ layer.feature.properties.routeWeight =
   }
 
   // ===== STATIONS + FACILITY ICON SIZES =====
-  trainStations.eachLayer(station => station.setIcon(getTrainIcon(zoom)));
-  airportsLayer.eachLayer(marker => marker.setIcon(getFacilityMarkerIcon('airport',zoom)));
-  seaportsLayer.eachLayer(marker => marker.setIcon(getFacilityMarkerIcon('seaport',zoom)));
-  if (zoom >= 10) map.addLayer(trainStations);
-  else map.removeLayer(trainStations);
+  trainStations.eachLayer(station => {
+    station.setIcon(getTrainIcon(zoom));
+  });
+
+  airportsLayer.eachLayer(marker => {
+    marker.setIcon(getFacilityMarkerIcon("airport", zoom));
+  });
+
+  seaportsLayer.eachLayer(marker => {
+    marker.setIcon(getFacilityMarkerIcon("seaport", zoom));
+  });
+
   toggleLayers();
 });
 
@@ -3522,6 +3699,13 @@ align="right">
 });
 
 }
+
+
+// ===== FACILITY DISPLAY CHECKBOXES =====
+["airports", "seaports"].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("change", toggleLayers);
+});
 
 
 // =====================================================
