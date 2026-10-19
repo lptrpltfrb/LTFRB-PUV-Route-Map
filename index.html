@@ -514,13 +514,14 @@
 }
 
 .facility-control-icon{
-  width:22px;height:22px;min-width:22px;
-  border:2px solid #fff;border-radius:50%;
+  width:24px;height:24px;min-width:24px;
+  border:2px solid #000;
   display:inline-flex;align-items:center;justify-content:center;
   box-shadow:0 1px 3px rgba(0,0,0,.35);
   box-sizing:border-box;
 }
 .facility-control-icon svg{width:14px;height:14px;display:block;}
+.facility-control-icon.facility-station,.facility-control-icon.facility-airport,.facility-control-icon.facility-seaport{border-radius:50%;}
 
 #display-controls label{
   cursor:pointer;
@@ -626,7 +627,16 @@
 }
 
 
-  </style>
+  
+.lgu-boundary-label {
+  background: transparent !important; border: 0 !important; border-radius: 0;
+  color: #FFFFFF; font: 600 10px Arial, sans-serif; padding: 0;
+  box-shadow: none !important; text-shadow: 0 1px 3px rgba(0,0,0,.95), 1px 0 2px rgba(0,0,0,.75), -1px 0 2px rgba(0,0,0,.75);
+  white-space: nowrap;
+}
+.lgu-boundary-label:before { display:none; }
+
+</style>
 </head>
 
 <body>
@@ -1043,21 +1053,36 @@
   <label class="legend-control">
     <input type="checkbox" id="rail" checked>
     <span class="legend-sample rail"></span>
-    <span class="facility-control-icon" style="background:#EF6C00;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M4 17h16v2H4zM6 15V7h2v8H6zm5 0V5h2v10h-2zm5 0V7h2v8h-2zM5 4h14v2H5z"/></svg></span>
+    <span class="facility-control-icon facility-station" style="background:#EF6C00;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M4 17h16v2H4zM6 15V7h2v8H6zm5 0V5h2v10h-2zm5 0V7h2v8h-2zM5 4h14v2H5z"/></svg></span>
     Railways / Stations
   </label>
 
   <label class="legend-control">
     <input type="checkbox" id="airports" checked>
-    <span class="facility-control-icon" style="background:#1976D2;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M21 16.5 13.5 12V5.5a1.5 1.5 0 0 0-3 0V12L3 16.5v2l7.5-2.2V20l-2 1.5V23l3.5-1 3.5 1v-1.5l-2-1.5v-3.7l7.5 2.2z"/></svg></span>
+    <span class="facility-control-icon facility-airport" style="background:#1976D2;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M21 16.5 13.5 12V5.5a1.5 1.5 0 0 0-3 0V12L3 16.5v2l7.5-2.2V20l-2 1.5V23l3.5-1 3.5 1v-1.5l-2-1.5v-3.7l7.5 2.2z"/></svg></span>
     Airports
   </label>
 
   <label class="legend-control">
     <input type="checkbox" id="seaports" checked>
-    <span class="facility-control-icon" style="background:#00897B;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M12 2 9.5 6h5zM11 7h2v8h-2zM5 14l7-3 7 3v4c-1.2 1-2.5 1.5-4 1.5S12.2 19 12 18c-.2 1-1.5 1.5-3 1.5S6.2 19 5 18zm0 5c1.2 1 2.5 1.5 4 1.5S11.8 20 12 19c.2 1 1.5 1.5 3 1.5s2.8-.5 4-1.5v2c-1.2 1-2.5 1.5-4 1.5S12.2 22 12 21c-.2 1-1.5 1.5-3 1.5S6.2 22 5 21z"/></svg></span>
+    <span class="facility-control-icon facility-seaport" style="background:#00897B;" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="white" d="M12 2 9.5 6h5zM11 7h2v8h-2zM5 14l7-3 7 3v4c-1.2 1-2.5 1.5-4 1.5S12.2 19 12 18c-.2 1-1.5 1.5-3 1.5S6.2 19 5 18zm0 5c1.2 1 2.5 1.5 4 1.5S11.8 20 12 19c.2 1 1.5 1.5 3 1.5s2.8-.5 4-1.5v2c-1.2 1-2.5 1.5-4 1.5S12.2 22 12 21c-.2 1-1.5 1.5-3 1.5S6.2 22 5 21z"/></svg></span>
     Seaports
   </label>
+
+  <div class="divider"></div>
+  <div class="panel-section">Administrative Boundaries</div>
+  <label class="legend-control" style="display:block;">
+    <select id="lguBoundaryLevel" style="width:100%;padding:5px;margin:3px 0 5px;">
+      <option value="off">Off — Hide boundaries</option>
+      <option value="0">Region</option>
+      <option value="1">Province</option>
+      <option value="2">City / Municipality</option>
+      <option value="3">Barangay</option>
+    </select>
+  </label>
+  <label class="legend-control"><input type="checkbox" id="lguBoundaryLines" checked> Show boundary lines</label>
+  <label class="legend-control"><input type="checkbox" id="lguBoundaryNames" checked> Show area names</label>
+  <div id="lguBoundaryStatus" style="font-size:10px;color:#666;margin-top:3px;">Boundaries are off.</div>
 
 </div>
 
@@ -1446,7 +1471,7 @@ map.createPane('popupPane');
 map.getPane('popupPane').style.zIndex = 1200;
 
 
-  L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+  L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     maxZoom: 20,
     subdomains: ['mt0','mt1','mt2','mt3']
   }).addTo(map);
@@ -3016,7 +3041,7 @@ if (visible) {
 
     map.addLayer(railGroup);
 
-    if (zoom >= 14)
+    if (zoom >= 12)
       map.addLayer(trainStations);
     else
       map.removeLayer(trainStations);
@@ -3034,7 +3059,7 @@ if (visible) {
   const showAirports =
     document.getElementById("airports")?.checked ?? true;
 
-  if (showAirports && zoom >= 10)
+  if (showAirports && zoom >= 12)
     map.addLayer(airportsLayer);
   else
     map.removeLayer(airportsLayer);
@@ -3045,44 +3070,39 @@ if (visible) {
   const showSeaports =
     document.getElementById("seaports")?.checked ?? true;
 
-  if (showSeaports && zoom >= 10)
+  if (showSeaports && zoom >= 12)
     map.addLayer(seaportsLayer);
   else
     map.removeLayer(seaportsLayer);
 }
 
   // ==== TRANSPORT FACILITY ICONS ====
-  // Visibility:
-  //   Railway stations: zoom 14+
-  //   Airports:          zoom 10+
-  //   Seaports:          zoom 10+
-  // Icons scale up as the map is zoomed in.
+  // Facility icons begin appearing at zoom 12 (the approximate local view in the user's screenshot).
+  // Icons scale up smoothly by zoom level.
   function getFacilitySize(zoom) {
     if (zoom >= 17) return 28;
-    if (zoom >= 15) return 24;
-    if (zoom >= 13) return 20;
-    if (zoom >= 11) return 17;
-    return 14;
+    if (zoom >= 16) return 25;
+    if (zoom >= 15) return 22;
+    if (zoom >= 14) return 20;
+    if (zoom >= 13) return 18;
+    if (zoom >= 12) return 16;
+    return 13;
   }
 
   function getFacilityMarkerIcon(kind, zoom) {
     const size = getFacilitySize(zoom);
-    const outer = size + 8;
-    const colors = {
-      station: "#EF6C00",
-      airport: "#1976D2",
-      seaport: "#00897B"
-    };
-
+    const colors = { station: "#EF6C00", airport: "#1976D2", seaport: "#00897B" };
     const icons = {
       station: '<path fill="white" d="M4 17h16v2H4zM6 15V7h2v8H6zm5 0V5h2v10h-2zm5 0V7h2v8h-2zM5 4h14v2H5z"/>',
       airport: '<path fill="white" d="M21 16.5 13.5 12V5.5a1.5 1.5 0 0 0-3 0V12L3 16.5v2l7.5-2.2V20l-2 1.5V23l3.5-1 3.5 1v-1.5l-2-1.5v-3.7l7.5 2.2z"/>',
       seaport: '<path fill="white" d="M12 2 9.5 6h5zM11 7h2v8h-2zM5 14l7-3 7 3v4c-1.2 1-2.5 1.5-4 1.5S12.2 19 12 18c-.2 1-1.5 1.5-3 1.5S6.2 19 5 18zm0 5c1.2 1 2.5 1.5 4 1.5S11.8 20 12 19c.2 1 1.5 1.5 3 1.5s2.8-.5 4-1.5v2c-1.2 1-2.5 1.5-4 1.5S12.2 22 12 21c-.2 1-1.5 1.5-3 1.5S6.2 22 5 21z"/>'
     };
-
+    const outer = size + 4;
+    const inner = size;
+    const svgSize = Math.max(9, size - 4);
     return L.divIcon({
       className: "facility-marker",
-      html: `<div style="background:${colors[kind]};border:2px solid #fff;border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.45);"><svg viewBox="0 0 24 24" style="width:${Math.max(11,size-4)}px;height:${Math.max(11,size-4)}px;">${icons[kind]}</svg></div>`,
+      html: `<div style="width:${outer}px;height:${outer}px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.4);"><div style="width:${inner}px;height:${inner}px;border-radius:50%;background:${colors[kind]};display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" style="width:${svgSize}px;height:${svgSize}px;display:block;">${icons[kind]}</svg></div></div>`,
       iconSize: [outer, outer],
       iconAnchor: [outer/2, outer/2]
     });
@@ -3091,6 +3111,19 @@ if (visible) {
   function getTrainIcon(zoom) {
     return getFacilityMarkerIcon("station", zoom);
   }
+
+  // Refresh facility marker sizes whenever the zoom changes.
+  function refreshFacilityIconSizes() {
+    [trainStations, airportsLayer, seaportsLayer].forEach(group => {
+      if (group && group.eachLayer) group.eachLayer(marker => {
+        if (marker.setIcon) {
+          const kind = marker.options && marker.options._facilityKind;
+          if (kind) marker.setIcon(getFacilityMarkerIcon(kind, map.getZoom()));
+        }
+      });
+    });
+  }
+  map.on('zoomend', refreshFacilityIconSizes);
 
   // ==== AIRPORTS + SEAPORTS ====
   fetch("https://script.google.com/macros/s/AKfycbwaj41qEO6DFV_fXSDWm1CP3hG0RZags9m3qV1QaKKf7EeM_Eb3tY-IDmrHqwJx0H5B9w/exec")
@@ -3113,6 +3146,7 @@ if (visible) {
         const marker = L.marker([lat, lon], {
           icon: getFacilityMarkerIcon(kind, map.getZoom())
         });
+        marker.options._facilityKind = kind;
 
         marker.bindPopup(
           p.name || (kind === "airport" ? "Airport" : "Seaport")
@@ -3759,6 +3793,78 @@ if (discussionBtn && discussionPanel) {
 }
 
 
+
+// ===== ADMINISTRATIVE BOUNDARIES (ArcGIS FeatureServer) =====
+function getLguBoundaryLabel(props, level) {
+  // Prefer the name field for the selected administrative level. Do not prioritize
+  // REGION/REGION_NAME for province, city/municipality, or barangay features.
+  const fieldsByLevel = {
+    '0': ['REGION_NAME','region_name','REGION','region','REG_NAME','reg_name','NAME_1','NAME'],
+    '1': ['PROVINCE','province','PROV_NAME','prov_name','NAME_2','NAME_1','NAME'],
+    '2': ['CITYMUN','CITY_MUN','CITY_MUNICIPALITY','MUNICIPALITY','MUNICIPALITY_NAME','CITY_NAME','CITY','NAME_3','NAME_2','NAME'],
+    '3': ['BRGY_NAME','BARANGAY','barangay','BARANGAY_NAME','BRGY','NAME_4','NAME_3','NAME']
+  };
+  const candidates = fieldsByLevel[String(level)] || ['NAME'];
+  for (const key of candidates) {
+    const value = props[key];
+    if (value !== undefined && value !== null && String(value).trim()) return String(value).trim();
+  }
+  // Fallback to any plausible feature-name field, but only after level-specific fields.
+  const generic = Object.keys(props).filter(key => /(^name$|name$|city|muni|prov|brgy|barangay)/i.test(key));
+  for (const key of generic) {
+    const value = props[key];
+    if (value !== undefined && value !== null && String(value).trim()) return String(value).trim();
+  }
+  return '';
+}
+const lguBoundaryLayer = L.geoJSON(null, {
+  style: () => ({ color: '#FFFFFF', weight: 1, opacity: 0.6, fillOpacity: 0 }),
+  onEachFeature: (feature, layer) => {
+    const props = feature.properties || {};
+    const level = document.getElementById('lguBoundaryLevel')?.value || '0';
+    const label = getLguBoundaryLabel(props, level);
+    if (label && document.getElementById('lguBoundaryNames')?.checked) layer.bindTooltip(label, { permanent: true, direction: 'center', className: 'lgu-boundary-label', opacity: 0.9 });
+  }
+});
+let lguBoundaryRequestId = 0;
+let lguBoundaryLastKey = '';
+function updateLguBoundaries() {
+  const select = document.getElementById('lguBoundaryLevel');
+  if (!select) return;
+  const level = select.value;
+  const status = document.getElementById('lguBoundaryStatus');
+  const showLines = document.getElementById('lguBoundaryLines')?.checked ?? true;
+  const showNames = document.getElementById('lguBoundaryNames')?.checked ?? true;
+  if (level === 'off') { map.removeLayer(lguBoundaryLayer); lguBoundaryLayer.clearLayers(); lguBoundaryLastKey = ''; if(status) status.textContent='Boundaries are off.'; return; }
+  if (map.getZoom() < (level === '3' ? 12 : level === '2' ? 9 : 5)) { map.removeLayer(lguBoundaryLayer); if(status) status.textContent='Zoom in to view this boundary level.'; return; }
+  const b = map.getBounds();
+  const key = [level, b.getWest().toFixed(2), b.getSouth().toFixed(2), b.getEast().toFixed(2), b.getNorth().toFixed(2)].join('|');
+  if (key === lguBoundaryLastKey) {
+    lguBoundaryLayer.setStyle({ color:'#FFFFFF', weight: level==='3' ? 0.6 : level==='2' ? 0.9 : 1.4, opacity:showLines?0.6:0, fillOpacity:0, fillColor:'#FFFFFF' });
+    lguBoundaryLayer.eachLayer(layer => { if (layer.getTooltip()) { if(showNames) layer.openTooltip(); else layer.closeTooltip(); } });
+    if (!map.hasLayer(lguBoundaryLayer)) lguBoundaryLayer.addTo(map);
+    if(status) status.textContent='Boundary overlay active.'; return;
+  }
+  const requestId = ++lguBoundaryRequestId;
+  lguBoundaryLastKey = key;
+  if(status) status.textContent='Loading boundaries…';
+  const layerUrl = `https://services7.arcgis.com/poQdgvLD6DHnbpsT/arcgis/rest/services/Administrative_Boundaries/FeatureServer/${level}/query`;
+  const params = new URLSearchParams({ where:'1=1', outFields:'*', returnGeometry:'true', f:'geojson', geometry:`${b.getWest()},${b.getSouth()},${b.getEast()},${b.getNorth()}`, geometryType:'esriGeometryEnvelope', inSR:'4326', spatialRel:'esriSpatialRelIntersects', outSR:'4326', resultRecordCount: level==='3' ? '1500' : '2000' });
+  fetch(layerUrl + '?' + params.toString()).then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }).then(data => {
+    if (requestId !== lguBoundaryRequestId) return;
+    lguBoundaryLayer.clearLayers();
+    lguBoundaryLayer.addData(data);
+    lguBoundaryLayer.setStyle({ color:'#FFFFFF', weight: level==='3' ? 0.6 : level==='2' ? 0.9 : 1.4, opacity:showLines?0.6:0, fillOpacity:0, fillColor:'#FFFFFF' });
+    lguBoundaryLayer.eachLayer(layer => {
+      const tip = layer.getTooltip();
+      if (tip) { if(showNames) layer.openTooltip(); else layer.unbindTooltip(); }
+    });
+    if (!map.hasLayer(lguBoundaryLayer)) lguBoundaryLayer.addTo(map);
+    if(status) status.textContent = `${(data.features||[]).length} boundary features loaded for this view.` + (level==='3' && (data.features||[]).length>=1500 ? ' Zoom in further for more barangays.' : '');
+  }).catch(err => { if(requestId!==lguBoundaryRequestId)return; if(status) status.textContent='Could not load boundaries. Check internet connection or try again.'; console.error('LGU boundary error:',err); });
+}
+['lguBoundaryLevel','lguBoundaryLines','lguBoundaryNames'].forEach(id => document.getElementById(id)?.addEventListener('change', () => { lguBoundaryLastKey=''; updateLguBoundaries(); }));
+map.on('moveend', () => { if(document.getElementById('lguBoundaryLevel')?.value !== 'off') { lguBoundaryLastKey=''; updateLguBoundaries(); } });
 </script>
 </body>
 </html>
